@@ -2,6 +2,7 @@ extends Control
 
 const HERO_PROLOGUE_SCENE: PackedScene = preload("res://hero_prologue.tscn")
 const AUDIO_SETTINGS_PATH := "user://audio_settings.cfg"
+const MASTER_BUS_INDEX: int = 0
 var scene_transition_started: bool = false
 
 @onready var hero_button: TextureButton = $HeroButton
@@ -25,7 +26,9 @@ func _ready() -> void:
 	_append_font_license("DotGothic16", "res://Asset/DotGothic16-OFL.txt")
 	var saved: ConfigFile = ConfigFile.new()
 	saved.load(AUDIO_SETTINGS_PATH)
-	volume_slider.value = clampf(float(saved.get_value("volume", "Volume", saved.get_value("volume", "BGM", 100.0))), 0.0, 100.0)
+	var default_volume: float = float(saved.get_value("volume", "BGM", 100.0))
+	default_volume = float(saved.get_value("volume", "Master", default_volume))
+	volume_slider.value = clampf(float(saved.get_value("volume", "Volume", default_volume)), 0.0, 100.0)
 	volume_slider.value_changed.connect(_apply_volume)
 	volume_slider.drag_started.connect(_start_test_sound)
 	volume_slider.drag_ended.connect(_stop_test_sound)
@@ -70,6 +73,8 @@ func _close_modal() -> void:
 	$MouseSound.play()
 	var return_focus: TextureButton = sound_button if mixer.visible else settings_button
 	if mixer.visible:
+		test_timer.stop()
+		test_sound.stop()
 		var saved: ConfigFile = ConfigFile.new()
 		saved.set_value("volume", "Volume", volume_slider.value)
 		var result: Error = saved.save(AUDIO_SETTINGS_PATH)
@@ -84,14 +89,12 @@ func _close_modal() -> void:
 
 func _apply_volume(value: float) -> void:
 	volume_value.text = "%d%%" % ceili(value)
-	for bus_name: StringName in [&"BGM", &"SE"]:
-		var bus_index: int = AudioServer.get_bus_index(bus_name)
-		if bus_index >= 0:
-			AudioServer.set_bus_volume_db(bus_index, linear_to_db(maxf(value / 100.0, 0.0001)))
-			AudioServer.set_bus_mute(bus_index, value == 0.0)
+	AudioServer.set_bus_volume_db(MASTER_BUS_INDEX, linear_to_db(maxf(value / 100.0, 0.0001)))
+	AudioServer.set_bus_mute(MASTER_BUS_INDEX, value == 0.0)
 
 
 func _start_test_sound() -> void:
+	test_sound.play()
 	test_timer.start()
 
 

@@ -305,3 +305,4 @@ color = Color(0, 0, 0, 0)
 
 [node name="MouseSound" type="AudioStreamPlayer" parent="." unique_id=602997633]
 stream = ExtResource("2_lipru")
+bus = &"SE"

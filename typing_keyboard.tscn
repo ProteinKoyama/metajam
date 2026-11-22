@@ -372,6 +372,8 @@ text = "M"
 
 [node name="TypingSound" type="AudioStreamPlayer" parent="." unique_id=114562461]
 stream = ExtResource("5_osmwg")
+bus = &"SE"
 
 [node name="QuestionSound" type="AudioStreamPlayer" parent="." unique_id=439244414]
 stream = ExtResource("6_t2sun")
+bus = &"SE"
