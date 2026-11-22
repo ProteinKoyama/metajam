@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://bbdwdoy5s6f60" path="res://Asset/title_slider_thumb.svg" id="7_thumb"]
 [ext_resource type="Texture2D" uid="uid://kpqmkajvnebi" path="res://Asset/Shiratama.png" id="8_8vmu4"]
 [ext_resource type="Texture2D" uid="uid://571hi7sy2mvm" path="res://Asset/icon_saikin.png" id="8_saikin"]
+[ext_resource type="Texture2D" uid="uid://p8mc141ypvv1" path="res://Asset/13cbd4c3614dc004ca5826212db39851.png" id="9_xfn3p"]
 
 [sub_resource type="Theme" id="DesktopTheme"]
 default_font = ExtResource("4_font")
@@ -248,6 +249,7 @@ offset_top = 306.0
 offset_right = 112.0
 offset_bottom = 406.0
 mouse_filter = 2
+texture = ExtResource("9_xfn3p")
 expand_mode = 1
 stretch_mode = 5
 

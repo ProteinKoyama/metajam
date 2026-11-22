@@ -9,6 +9,8 @@
 .import/
 export.cfg
 export_credentials.cfg
+/unityroom_local.cfg
+/unityroom_local.tres
 
 # Editor temporary files and backups
 *.tmp
