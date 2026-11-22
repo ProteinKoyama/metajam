@@ -81,6 +81,7 @@ func _on_key_pressed(key: Button) -> void:
 
 	score_value.text = ("−" if score_negative else "") + score_digits
 	status.text = ""
+	$MouseSound.play()
 
 
 func _confirm_rating() -> void:

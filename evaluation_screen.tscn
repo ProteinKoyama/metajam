@@ -1,49 +1,48 @@
 [gd_scene format=3 uid="uid://dl7jfj0v684tl"]
 
 [ext_resource type="Script" uid="uid://behivkkhgo4s7" path="res://evaluation_screen.gd" id="1"]
+[ext_resource type="FontFile" uid="uid://otrgh6crahlj" path="res://Asset/NotoSansJP-Regular.otf" id="2_font"]
 [ext_resource type="AudioStream" uid="uid://5qbbvrsyx7dd" path="res://Asset/SE_Mouse.ogg" id="2_lipru"]
-
-[ext_resource type="FontFile" path="res://Asset/NotoSansJP-Regular.otf" id="2_font"]
-
-[sub_resource type="StyleBoxFlat" id="ButtonNormal"]
-bg_color = Color(0.45, 0.46, 0.46, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_left = 2
-corner_radius_bottom_right = 2
-
-[sub_resource type="StyleBoxFlat" id="ButtonHover"]
-bg_color = Color(0.37, 0.39, 0.39, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_left = 2
-corner_radius_bottom_right = 2
-
-[sub_resource type="StyleBoxFlat" id="ButtonPressed"]
-bg_color = Color(0.29, 0.31, 0.31, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_left = 2
-corner_radius_bottom_right = 2
 
 [sub_resource type="StyleBoxFlat" id="ButtonDisabled"]
 bg_color = Color(0.57, 0.58, 0.58, 1)
 corner_radius_top_left = 2
 corner_radius_top_right = 2
-corner_radius_bottom_left = 2
 corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="ButtonHover"]
+bg_color = Color(0.37, 0.39, 0.39, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="ButtonNormal"]
+bg_color = Color(0.45, 0.46, 0.46, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="ButtonPressed"]
+bg_color = Color(0.29, 0.31, 0.31, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
 
 [sub_resource type="Theme" id="EvaluationTheme"]
 default_font = ExtResource("2_font")
 default_font_size = 40
-Label/colors/font_color = Color(0.15, 0.15, 0.15, 1)
 Button/colors/font_color = Color(0.89, 0.9, 0.9, 1)
 Button/colors/font_hover_color = Color(1, 1, 1, 1)
 Button/colors/font_pressed_color = Color(1, 1, 1, 1)
-Button/styles/normal = SubResource("ButtonNormal")
-Button/styles/hover = SubResource("ButtonHover")
-Button/styles/pressed = SubResource("ButtonPressed")
 Button/styles/disabled = SubResource("ButtonDisabled")
+Button/styles/hover = SubResource("ButtonHover")
+Button/styles/normal = SubResource("ButtonNormal")
+Button/styles/pressed = SubResource("ButtonPressed")
+Label/colors/font_color = Color(0.15, 0.15, 0.15, 1)
 
 [sub_resource type="StyleBoxFlat" id="ScoreBox"]
 content_margin_left = 24.0
@@ -58,11 +57,12 @@ border_color = Color(0.15, 0.15, 0.15, 1)
 [sub_resource type="StyleBoxFlat" id="NarratorBox"]
 bg_color = Color(0, 0, 0, 0.72)
 
-[node name="EvaluationScreen" type="ColorRect"]
-layout_mode = 3
+[node name="EvaluationScreen" type="ColorRect" unique_id=2125089947]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme = SubResource("EvaluationTheme")
 color = Color(0.963, 0.977, 0.98, 1)
 script = ExtResource("1")
@@ -99,7 +99,8 @@ text = "点数："
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="Score" type="Panel" parent="Form"]
+[node name="Score" type="Panel" parent="Form" unique_id=1365018325]
+layout_mode = 0
 offset_left = 362.0
 offset_top = 150.0
 offset_right = 912.0
@@ -107,7 +108,8 @@ offset_bottom = 245.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("ScoreBox")
 
-[node name="Value" type="Label" parent="Form/Score"]
+[node name="Value" type="Label" parent="Form/Score" unique_id=1230415083]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 24.0
@@ -127,7 +129,17 @@ theme_override_font_sizes/font_size = 68
 text = "点"
 vertical_alignment = 1
 
-[node name="Keypad" type="GridContainer" parent="."]
+[node name="Status" type="Label" parent="Form" unique_id=2047442809]
+layout_mode = 0
+offset_top = 286.0
+offset_right = 1140.0
+offset_bottom = 330.0
+theme_override_font_sizes/font_size = 28
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Keypad" type="GridContainer" parent="." unique_id=2022314299]
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -140,91 +152,92 @@ theme_override_constants/h_separation = 12
 theme_override_constants/v_separation = 12
 columns = 3
 
-[node name="Seven" type="Button" parent="Keypad"]
+[node name="Seven" type="Button" parent="Keypad" unique_id=1818654702]
 custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
-theme_override_font_sizes/font_size = 46
 mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 46
 text = "7"
 
-[node name="Eight" type="Button" parent="Keypad"]
+[node name="Eight" type="Button" parent="Keypad" unique_id=2003000865]
 custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
-theme_override_font_sizes/font_size = 46
 mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 46
 text = "8"
 
-[node name="Nine" type="Button" parent="Keypad"]
+[node name="Nine" type="Button" parent="Keypad" unique_id=873839148]
 custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
-theme_override_font_sizes/font_size = 46
 mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 46
 text = "9"
 
-[node name="Four" type="Button" parent="Keypad"]
+[node name="Four" type="Button" parent="Keypad" unique_id=1292952606]
 custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
-theme_override_font_sizes/font_size = 46
 mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 46
 text = "4"
 
-[node name="Five" type="Button" parent="Keypad"]
+[node name="Five" type="Button" parent="Keypad" unique_id=559012455]
 custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
-theme_override_font_sizes/font_size = 46
 mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 46
 text = "5"
 
-[node name="Six" type="Button" parent="Keypad"]
+[node name="Six" type="Button" parent="Keypad" unique_id=1716411066]
 custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
-theme_override_font_sizes/font_size = 46
 mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 46
 text = "6"
 
-[node name="One" type="Button" parent="Keypad"]
+[node name="One" type="Button" parent="Keypad" unique_id=1409648365]
 custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
-theme_override_font_sizes/font_size = 46
 mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 46
 text = "1"
 
-[node name="Two" type="Button" parent="Keypad"]
+[node name="Two" type="Button" parent="Keypad" unique_id=1676963241]
 custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
-theme_override_font_sizes/font_size = 46
 mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 46
 text = "2"
 
-[node name="Three" type="Button" parent="Keypad"]
+[node name="Three" type="Button" parent="Keypad" unique_id=590954782]
 custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
-theme_override_font_sizes/font_size = 46
 mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 46
 text = "3"
 
-[node name="Clear" type="Button" parent="Keypad"]
+[node name="Clear" type="Button" parent="Keypad" unique_id=2099403661]
 custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
 mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 26
 text = "全消去"
 
-[node name="Zero" type="Button" parent="Keypad"]
+[node name="Zero" type="Button" parent="Keypad" unique_id=152898805]
 custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
-theme_override_font_sizes/font_size = 46
 mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 46
 text = "0"
 
-[node name="Erase" type="Button" parent="Keypad"]
+[node name="Erase" type="Button" parent="Keypad" unique_id=635304349]
 custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
 mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 26
 text = "1桁削除"
 
-[node name="Minus" type="Button" parent="."]
+[node name="Minus" type="Button" parent="." unique_id=1249752214]
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -233,11 +246,12 @@ offset_left = -258.0
 offset_top = -270.0
 offset_right = -94.0
 offset_bottom = -198.0
+mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 46
 text = "−"
-mouse_default_cursor_shape = 2
 
-[node name="Confirm" type="Button" parent="."]
+[node name="Confirm" type="Button" parent="." unique_id=574816964]
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -246,20 +260,10 @@ offset_left = -2.0
 offset_top = -270.0
 offset_right = 258.0
 offset_bottom = -198.0
-text = "評価を決定"
 mouse_default_cursor_shape = 2
 text = "評価を決定"
 
-[node name="Status" type="Label" parent="Form"]
-offset_left = 0.0
-offset_top = 286.0
-offset_right = 1140.0
-offset_bottom = 330.0
-theme_override_font_sizes/font_size = 28
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Narrator" type="Panel" parent="."]
+[node name="Narrator" type="Panel" parent="." unique_id=1132674454]
 visible = false
 layout_mode = 0
 anchor_left = 0.5
@@ -273,7 +277,7 @@ offset_bottom = -56.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("NarratorBox")
 
-[node name="Line" type="Label" parent="Narrator"]
+[node name="Line" type="Label" parent="Narrator" unique_id=582576737]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
