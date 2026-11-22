@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://hero_music.gd" id="1_script"]
+[ext_resource type="AudioStream" uid="uid://d3vw2hw03sc0v" path="res://Asset/BGM_Hero.ogg" id="2_bgm"]
+
+[node name="HeroMusic" type="AudioStreamPlayer"]
+stream = ExtResource("2_bgm")
+volume_db = -3.0
+bus = &"BGM"
+script = ExtResource("1_script")

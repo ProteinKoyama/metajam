@@ -7,7 +7,6 @@
 [ext_resource type="Texture2D" uid="uid://dolujw7w8b1v1" path="res://Asset/screen1_walk_2.png" id="5_walk"]
 [ext_resource type="FontFile" uid="uid://6qq83a2xf75j" path="res://Asset/DotGothic16-Regular.ttf" id="6_7mycd"]
 [ext_resource type="Texture2D" uid="uid://d6adpmvn1s35" path="res://Asset/screen1_hand.png" id="7_hand"]
-[ext_resource type="AudioStream" uid="uid://d3vw2hw03sc0v" path="res://Asset/BGM_Hero.ogg" id="8_hero_bgm"]
 [ext_resource type="Texture2D" uid="uid://cnexy3lwuus7e" path="res://Asset/screen1_slime_1.png" id="9_slime"]
 [ext_resource type="Texture2D" uid="uid://eqa1dydw21op" path="res://Asset/screen1_slime_2.png" id="10_slime"]
 [ext_resource type="Texture2D" uid="uid://c487f2e7i55ce" path="res://Asset/screen1_battle_1.png" id="11_battle"]
@@ -371,18 +370,13 @@ autowrap_mode = 3
 [node name="AutoStepTimer" type="Timer" parent="." unique_id=1046730057]
 wait_time = 2.0
 
-[node name="HeroBGM" type="AudioStreamPlayer" parent="." unique_id=1282775424]
-stream = ExtResource("8_hero_bgm")
-volume_db = -3.0
-bus = &"BGM"
-
 [node name="TypingBGM" type="AudioStreamPlayer" parent="." unique_id=214401545]
 stream = ExtResource("14_typing_bgm")
 volume_db = -3.0
 bus = &"BGM"
 
 [node name="InactivityTimer" type="Timer" parent="." unique_id=1737452784]
-wait_time = 60.0
+wait_time = 40.0
 one_shot = true
 autostart = true
 

@@ -83,16 +83,11 @@ var active_typing_line: String = ""
 @onready var typing_idle_timer: Timer = $TypingIdleTimer
 @onready var inactivity_timer: Timer = $InactivityTimer
 @onready var typing_overlay: TextureRect = $TypingOverlay
-@onready var hero_bgm: AudioStreamPlayer = $HeroBGM
+@onready var hero_bgm: AudioStreamPlayer = HeroMusic
 @onready var typing_bgm: AudioStreamPlayer = $TypingBGM
 
 func _ready() -> void:
-	var prologue_bgm: AudioStreamPlayer = get_tree().root.get_node_or_null("PrologueBGM") as AudioStreamPlayer
-	if prologue_bgm != null:
-		hero_bgm.queue_free()
-		hero_bgm = prologue_bgm
-	else:
-		hero_bgm.play()
+	HeroMusic.ensure_playing()
 	set_process(false)
 	_update_gold_display()
 	_update_cheer_display()
@@ -104,8 +99,8 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
-	if is_instance_valid(hero_bgm) and hero_bgm.get_parent() != self:
-		hero_bgm.queue_free()
+	if is_instance_valid(hero_bgm):
+		hero_bgm.stop()
 
 
 func _input(event: InputEvent) -> void:

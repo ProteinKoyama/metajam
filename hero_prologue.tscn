@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://d2ubmj8lklvpy" path="res://hero_prologue.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://6qq83a2xf75j" path="res://Asset/DotGothic16-Regular.ttf" id="2_font"]
-[ext_resource type="AudioStream" uid="uid://d3vw2hw03sc0v" path="res://Asset/BGM_Hero.ogg" id="3_bgm"]
 
 [sub_resource type="Theme" id="PrologueTheme"]
 default_font = ExtResource("2_font")
@@ -26,11 +25,6 @@ mouse_default_cursor_shape = 2
 theme = SubResource("PrologueTheme")
 color = Color(0, 0, 0, 1)
 script = ExtResource("1_script")
-
-[node name="PrologueBGM" type="AudioStreamPlayer" parent="." unique_id=1213812974]
-stream = ExtResource("3_bgm")
-volume_db = -3.0
-bus = &"BGM"
 
 [node name="Dialogue" type="Panel" parent="." unique_id=325652223]
 layout_mode = 0
