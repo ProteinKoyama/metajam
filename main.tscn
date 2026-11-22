@@ -1,0 +1,406 @@
+[gd_scene format=3 uid="uid://blgvsds366f6j"]
+
+[ext_resource type="Script" uid="uid://d4guly1q3aiag" path="res://main.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://cooe1o5hexwrl" path="res://Asset/screen1_stand_1.png" id="2_0xm2m"]
+[ext_resource type="Texture2D" uid="uid://cgq0nyj4o7mx0" path="res://Asset/yusha_ground.png" id="3_ground"]
+[ext_resource type="Texture2D" uid="uid://kr452bus72t4" path="res://Asset/screen1_walk_1.png" id="4_walk"]
+[ext_resource type="Texture2D" uid="uid://dolujw7w8b1v1" path="res://Asset/screen1_walk_2.png" id="5_walk"]
+[ext_resource type="FontFile" uid="uid://6qq83a2xf75j" path="res://Asset/DotGothic16-Regular.ttf" id="6_7mycd"]
+[ext_resource type="Texture2D" uid="uid://d6adpmvn1s35" path="res://Asset/screen1_hand.png" id="7_hand"]
+[ext_resource type="AudioStream" uid="uid://d3vw2hw03sc0v" path="res://Asset/BGM_Hero.ogg" id="8_hero_bgm"]
+[ext_resource type="Texture2D" uid="uid://cnexy3lwuus7e" path="res://Asset/screen1_slime_1.png" id="9_slime"]
+[ext_resource type="Texture2D" uid="uid://eqa1dydw21op" path="res://Asset/screen1_slime_2.png" id="10_slime"]
+[ext_resource type="Texture2D" uid="uid://c487f2e7i55ce" path="res://Asset/screen1_battle_1.png" id="11_battle"]
+[ext_resource type="Texture2D" uid="uid://w0v850243mdl" path="res://Asset/screen1_battle_2.png" id="12_battle"]
+[ext_resource type="Texture2D" uid="uid://beoolq22ify84" path="res://Asset/screen2_hc.png" id="13_typing"]
+[ext_resource type="AudioStream" uid="uid://c1lmkisdjgk1q" path="res://Asset/BGM_Typing.ogg" id="14_typing_bgm"]
+
+[ext_resource type="PackedScene" path="res://typing_keyboard.tscn" id="15_keyboard"]
+[ext_resource type="PackedScene" path="res://evaluation_screen.tscn" id="16_evaluation"]
+[ext_resource type="FontFile" path="res://Asset/NotoSansJP-Regular.otf" id="17_narrator_font"]
+
+[sub_resource type="Theme" id="ClickerTheme"]
+default_font = ExtResource("6_7mycd")
+
+[sub_resource type="StyleBoxFlat" id="Frame"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 20
+border_width_top = 20
+border_width_right = 20
+border_width_bottom = 20
+border_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="NarratorBox"]
+bg_color = Color(0, 0, 0, 0.72)
+
+[node name="Main" type="Control" unique_id=1102649488]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("ClickerTheme")
+script = ExtResource("1")
+walk_frames = Array[Texture2D]([ExtResource("4_walk"), ExtResource("5_walk")])
+battle_frames = Array[Texture2D]([ExtResource("11_battle"), ExtResource("12_battle")])
+slime_hit_texture = ExtResource("10_slime")
+
+[node name="Sky" type="ColorRect" parent="." unique_id=936786620]
+layout_mode = 0
+offset_right = 1002.0
+offset_bottom = 1080.0
+mouse_filter = 2
+color = Color(0.66, 0.97, 0.96, 1)
+
+[node name="Ground" type="Control" parent="." unique_id=2126331634]
+clip_contents = true
+anchors_preset = 0
+offset_right = 1002.0
+offset_bottom = 1080.0
+mouse_filter = 2
+
+[node name="Tiles" type="Control" parent="Ground" unique_id=556054465]
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="First" type="TextureRect" parent="Ground/Tiles" unique_id=663133893]
+texture_filter = 1
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+mouse_filter = 2
+texture = ExtResource("3_ground")
+
+[node name="Second" type="TextureRect" parent="Ground/Tiles" unique_id=392029186]
+texture_filter = 1
+layout_mode = 0
+offset_left = 1920.0
+offset_right = 3840.0
+offset_bottom = 1080.0
+mouse_filter = 2
+texture = ExtResource("3_ground")
+
+[node name="Slime" type="TextureRect" parent="." unique_id=1314800097]
+visible = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 520.0
+offset_top = 620.0
+offset_right = 940.0
+offset_bottom = 1000.0
+mouse_filter = 2
+mouse_default_cursor_shape = 2
+texture = ExtResource("9_slime")
+expand_mode = 1
+
+[node name="Shop" type="ColorRect" parent="." unique_id=2078232731]
+layout_mode = 0
+offset_left = 1002.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Hero" type="TextureRect" parent="." unique_id=1881140519]
+texture_filter = 1
+layout_mode = 0
+offset_left = 100.0
+offset_top = 240.0
+offset_right = 480.0
+offset_bottom = 1000.0
+mouse_filter = 0
+mouse_default_cursor_shape = 2
+texture = ExtResource("2_0xm2m")
+expand_mode = 1
+
+[node name="Hand" type="TextureRect" parent="Hero" unique_id=119327975]
+visible = false
+texture_filter = 1
+layout_mode = 0
+offset_left = -96.0
+offset_top = 390.0
+offset_right = 24.0
+offset_bottom = 530.0
+mouse_filter = 2
+texture = ExtResource("7_hand")
+
+[node name="Flash" type="ColorRect" parent="Hero" unique_id=849280639]
+layout_mode = 0
+offset_left = 120.0
+offset_top = 380.0
+offset_right = 300.0
+offset_bottom = 500.0
+mouse_filter = 2
+color = Color(1, 1, 1, 0)
+
+[node name="BattlePose" type="Sprite2D" parent="Hero" unique_id=781582932]
+visible = false
+texture_filter = 1
+centered = false
+
+[node name="StepPopupTemplate" type="Label" parent="Hero"]
+visible = false
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.86, 0.32, 1)
+theme_override_colors/font_outline_color = Color(0.12, 0.08, 0.04, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 54
+text = "+1"
+
+[node name="Title" type="Label" parent="." unique_id=777627706]
+layout_mode = 0
+offset_top = 32.0
+offset_right = 1002.0
+offset_bottom = 132.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("6_7mycd")
+theme_override_font_sizes/font_size = 80
+text = "まおうじょうまで"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StepCount" type="Label" parent="." unique_id=545985582]
+layout_mode = 0
+offset_top = 132.0
+offset_right = 1002.0
+offset_bottom = 230.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("6_7mycd")
+theme_override_font_sizes/font_size = 68
+text = "0 / 1,000,000 ほ"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CheerFrame" type="Button" parent="." unique_id=914185662]
+layout_mode = 0
+offset_left = 1080.0
+offset_top = 60.0
+offset_right = 1860.0
+offset_bottom = 220.0
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = SubResource("Frame")
+theme_override_styles/pressed = SubResource("Frame")
+theme_override_styles/hover = SubResource("Frame")
+theme_override_styles/disabled = SubResource("Frame")
+disabled = true
+
+[node name="Text" type="Label" parent="CheerFrame" unique_id=1195380662]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 470.0
+offset_bottom = 140.0
+theme_override_fonts/font = ExtResource("6_7mycd")
+theme_override_font_sizes/font_size = 72
+text = "おうえん"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Price" type="Label" parent="CheerFrame" unique_id=956154490]
+layout_mode = 0
+offset_left = 480.0
+offset_top = 20.0
+offset_right = 732.0
+offset_bottom = 82.0
+theme_override_fonts/font = ExtResource("6_7mycd")
+theme_override_font_sizes/font_size = 38
+text = "10 ゴールド"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Quantity" type="Label" parent="CheerFrame" unique_id=1065003086]
+layout_mode = 0
+offset_left = 480.0
+offset_top = 82.0
+offset_right = 732.0
+offset_bottom = 140.0
+theme_override_fonts/font = ExtResource("6_7mycd")
+theme_override_font_sizes/font_size = 36
+text = "しょじ 0こ"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="LockedFrameOne" type="Panel" parent="." unique_id=1894862620]
+layout_mode = 0
+offset_left = 1080.0
+offset_top = 260.0
+offset_right = 1860.0
+offset_bottom = 420.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Frame")
+
+[node name="Text" type="Label" parent="LockedFrameOne" unique_id=1818143060]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 760.0
+offset_bottom = 140.0
+theme_override_font_sizes/font_size = 88
+text = "？？？"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HoofButton" type="Button" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 1080.0
+offset_top = 260.0
+offset_right = 1860.0
+offset_bottom = 420.0
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = SubResource("Frame")
+theme_override_styles/pressed = SubResource("Frame")
+theme_override_styles/hover = SubResource("Frame")
+theme_override_styles/disabled = SubResource("Frame")
+disabled = true
+
+[node name="Text" type="Label" parent="HoofButton"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 470.0
+offset_bottom = 140.0
+theme_override_fonts/font = ExtResource("6_7mycd")
+theme_override_font_sizes/font_size = 58
+text = "うまのひづめ"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Price" type="Label" parent="HoofButton"]
+layout_mode = 0
+offset_left = 480.0
+offset_top = 20.0
+offset_right = 732.0
+offset_bottom = 82.0
+theme_override_fonts/font = ExtResource("6_7mycd")
+theme_override_font_sizes/font_size = 38
+text = "100 ゴールド"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Quantity" type="Label" parent="HoofButton"]
+layout_mode = 0
+offset_left = 480.0
+offset_top = 82.0
+offset_right = 732.0
+offset_bottom = 140.0
+theme_override_fonts/font = ExtResource("6_7mycd")
+theme_override_font_sizes/font_size = 36
+text = "しょじ 0こ"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="LockedFrameTwo" type="Panel" parent="." unique_id=187442855]
+layout_mode = 0
+offset_left = 1080.0
+offset_top = 460.0
+offset_right = 1860.0
+offset_bottom = 620.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Frame")
+
+[node name="Text" type="Label" parent="LockedFrameTwo" unique_id=956493209]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 760.0
+offset_bottom = 140.0
+theme_override_font_sizes/font_size = 88
+text = "？？？"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Gold" type="Label" parent="." unique_id=231872410]
+layout_mode = 0
+offset_left = 1080.0
+offset_top = 637.0
+offset_right = 1860.0
+offset_bottom = 742.0
+theme_override_fonts/font = ExtResource("6_7mycd")
+theme_override_font_sizes/font_size = 60
+text = "0 ゴールド"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="LevelStatus" type="Label" parent="." unique_id=425343249]
+layout_mode = 0
+offset_left = 1080.0
+offset_top = 752.0
+offset_right = 1860.0
+offset_bottom = 824.0
+theme_override_font_sizes/font_size = 48
+text = "レベル 1   とうばつ 0 / 1"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Narrator" type="Panel" parent="." unique_id=2083475387]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -760.0
+offset_top = -192.0
+offset_right = 760.0
+offset_bottom = -56.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("NarratorBox")
+
+[node name="Line" type="Label" parent="Narrator" unique_id=1761520348]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = 12.0
+offset_right = -32.0
+offset_bottom = -12.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("17_narrator_font")
+theme_override_font_sizes/font_size = 38
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="AutoStepTimer" type="Timer" parent="." unique_id=1046730057]
+wait_time = 2.0
+
+[node name="HeroBGM" type="AudioStreamPlayer" parent="." unique_id=1282775424]
+stream = ExtResource("8_hero_bgm")
+autoplay = true
+bus = &"BGM"
+
+[node name="TypingBGM" type="AudioStreamPlayer" parent="." unique_id=214401545]
+stream = ExtResource("14_typing_bgm")
+bus = &"BGM"
+
+[node name="InactivityTimer" type="Timer" parent="." unique_id=1737452784]
+wait_time = 60.0
+autostart = true
+
+[node name="TypingOverlay" type="TextureRect" parent="." unique_id=1932686587]
+visible = false
+texture_filter = 1
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 0
+texture = ExtResource("13_typing")
+expand_mode = 1
+
+[node name="TypingKeyboard" parent="TypingOverlay" instance=ExtResource("15_keyboard")]
+
+[node name="EvaluationScreen" parent="." instance=ExtResource("16_evaluation")]
+visible = false
+
+[connection signal="typing_completed" from="TypingOverlay/TypingKeyboard" to="." method="_show_evaluation_screen"]
+[connection signal="gui_input" from="Hero" to="." method="_on_hero_input"]
+[connection signal="pressed" from="CheerFrame" to="." method="_on_buy_cheer_pressed"]
+[connection signal="pressed" from="HoofButton" to="." method="_on_buy_hoof_pressed"]
+[connection signal="timeout" from="AutoStepTimer" to="." method="_on_auto_step_timer_timeout"]
+[connection signal="timeout" from="InactivityTimer" to="." method="_on_inactivity_timer_timeout"]
