@@ -3,57 +3,63 @@ extends ColorRect
 signal evaluation_confirmed(score: int)
 
 const MAX_SCORE_TEXT := "9223372036854775807"
-var accepted_score_text: String = ""
+const NARRATOR_PATH := "res://narrator.json"
+var score_digits: String = ""
 
-@onready var score_input: LineEdit = $Form/Score
+@onready var score_value: Label = $Form/Score/Value
+@onready var keypad: GridContainer = $Keypad
 @onready var status: Label = $Form/Status
-@onready var confirm: Button = $Form/Confirm
+@onready var confirm: Button = $Confirm
+@onready var narrator: Panel = $Narrator
+@onready var narrator_line: Label = $Narrator/Line
+@onready var ending_blackout: ColorRect = $EndingBlackout
 
 
 func _ready() -> void:
+	for child in keypad.get_children():
+		if child is Button:
+			child.pressed.connect(_on_key_pressed.bind(child))
 	confirm.pressed.connect(_confirm_rating)
-	score_input.text_changed.connect(_on_score_changed)
-	score_input.text_submitted.connect(_on_score_submitted)
+	var lines: Variant = JSON.parse_string(FileAccess.get_file_as_string(NARRATOR_PATH))
+	if lines is Dictionary:
+		var request: Variant = lines.get("evaluation_request")
+		if request is String and not request.is_empty():
+			narrator_line.text = request
+			narrator.show()
 
 
-func _on_score_changed(value: String) -> void:
-	var caret: int = score_input.caret_column
-	var digits: String = ""
-	var filtered_caret: int = 0
-	for index in range(value.length()):
-		var codepoint: int = value.unicode_at(index)
-		if codepoint >= 0xFF10 and codepoint <= 0xFF19:
-			codepoint -= 0xFF10 - 0x30
-		if codepoint >= 0x30 and codepoint <= 0x39:
-			digits += String.chr(codepoint)
-			if index < caret:
-				filtered_caret += 1
+func _on_key_pressed(key: Button) -> void:
+	match key.name:
+		&"Clear":
+			score_digits = ""
+		&"Erase":
+			score_digits = score_digits.substr(0, maxi(0, score_digits.length() - 1))
+		_:
+			var candidate: String = key.text if score_digits == "0" else score_digits + key.text
+			# Compare before conversion to avoid overflowing the integer.
+			if candidate.length() > MAX_SCORE_TEXT.length() or (
+				candidate.length() == MAX_SCORE_TEXT.length() and candidate > MAX_SCORE_TEXT
+			):
+				status.text = "入力できる最大の点数は 9,223,372,036,854,775,807 です。"
+				return
+			score_digits = candidate
 
-	# Compare the digits before converting so an overflowing value cannot be parsed.
-	if digits.length() > MAX_SCORE_TEXT.length() or (
-		digits.length() == MAX_SCORE_TEXT.length() and digits > MAX_SCORE_TEXT
-	):
-		score_input.text = accepted_score_text
-		score_input.caret_column = mini(caret, accepted_score_text.length())
-		status.text = "入力できる最大の点数は 9,223,372,036,854,775,807 です。"
-		return
-
-	accepted_score_text = digits
-	if digits != value:
-		score_input.text = digits
-		score_input.caret_column = filtered_caret
+	score_value.text = score_digits
 	status.text = ""
 
 
-func _on_score_submitted(_value: String) -> void:
-	_confirm_rating()
-
-
 func _confirm_rating() -> void:
-	if accepted_score_text.is_empty():
+	if ending_blackout.visible:
+		return
+	if score_digits.is_empty():
 		status.text = "点数を入力してください。"
 		return
 
-	var score: int = accepted_score_text.to_int()
 	status.text = "評価を受け付けました。"
-	evaluation_confirmed.emit(score)
+	var focused_control: Control = get_viewport().gui_get_focus_owner()
+	if focused_control != null:
+		focused_control.release_focus()
+	ending_blackout.show()
+	var fade: Tween = create_tween()
+	fade.tween_property(ending_blackout, "color:a", 1.0, 1.0)
+	evaluation_confirmed.emit(score_digits.to_int())

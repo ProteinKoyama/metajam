@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://b5eicyofpevjl"]
+
+[ext_resource type="Script" uid="uid://d2ubmj8lklvpy" path="res://hero_prologue.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://6qq83a2xf75j" path="res://Asset/DotGothic16-Regular.ttf" id="2_font"]
+
+[sub_resource type="Theme" id="PrologueTheme"]
+default_font = ExtResource("2_font")
+
+[sub_resource type="StyleBoxFlat" id="DialogueBorder"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(1, 1, 1, 1)
+anti_aliasing = false
+
+[node name="HeroPrologue" type="ColorRect" unique_id=1279824522]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+theme = SubResource("PrologueTheme")
+color = Color(0, 0, 0, 1)
+script = ExtResource("1_script")
+
+[node name="Dialogue" type="Panel" parent="." unique_id=325652223]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -720.0
+offset_top = -408.0
+offset_right = 720.0
+offset_bottom = -64.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("DialogueBorder")
+
+[node name="Line" type="Label" parent="Dialogue" unique_id=482925442]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 64.0
+offset_top = 40.0
+offset_right = -64.0
+offset_bottom = -85.0
+theme_override_constants/line_spacing = 12
+theme_override_font_sizes/font_size = 56
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Continue" type="Label" parent="Dialogue" unique_id=672030197]
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 64.0
+offset_top = -70.0
+offset_right = -54.0
+offset_bottom = -27.0
+theme_override_font_sizes/font_size = 28
+text = "クリックでつぎへ  ▼"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]

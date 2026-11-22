@@ -1,6 +1,6 @@
 extends Control
 
-const HERO_CLICKER_SCENE: PackedScene = preload("res://main.tscn")
+const HERO_PROLOGUE_SCENE: PackedScene = preload("res://hero_prologue.tscn")
 const AUDIO_SETTINGS_PATH := "user://audio_settings.cfg"
 
 @onready var hero_button: TextureButton = $HeroButton
@@ -83,6 +83,6 @@ func _apply_volume(value: float, bus_name: StringName, value_label: Label) -> vo
 
 
 func _on_hero_button_pressed() -> void:
-	var result: Error = get_tree().change_scene_to_packed(HERO_CLICKER_SCENE)
+	var result: Error = get_tree().change_scene_to_packed(HERO_PROLOGUE_SCENE)
 	if result != OK:
-		push_error("Could not open the hero clicker: %s" % error_string(result))
+		push_error("Could not open the hero prologue: %s" % error_string(result))

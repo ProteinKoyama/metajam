@@ -15,7 +15,6 @@
 [ext_resource type="Texture2D" uid="uid://beoolq22ify84" path="res://Asset/screen2_hc.png" id="13_typing"]
 [ext_resource type="AudioStream" uid="uid://c1lmkisdjgk1q" path="res://Asset/BGM_Typing.ogg" id="14_typing_bgm"]
 [ext_resource type="PackedScene" path="res://typing_keyboard.tscn" id="15_keyboard"]
-[ext_resource type="PackedScene" path="res://evaluation_screen.tscn" id="16_evaluation"]
 [ext_resource type="FontFile" uid="uid://otrgh6crahlj" path="res://Asset/NotoSansJP-Regular.otf" id="17_narrator_font"]
 
 [sub_resource type="Theme" id="ClickerTheme"]
@@ -377,7 +376,8 @@ autoplay = true
 stream = ExtResource("14_typing_bgm")
 
 [node name="InactivityTimer" type="Timer" parent="." unique_id=1737452784]
-wait_time = 60.0
+wait_time = 90.0
+one_shot = true
 autostart = true
 
 [node name="TypingOverlay" type="TextureRect" parent="." unique_id=1932686587]
@@ -395,25 +395,44 @@ layout_mode = 1
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="EvaluationScreen" parent="." unique_id=863850494 instance=ExtResource("16_evaluation")]
+[node name="TypingNarrator" type="Panel" parent="."]
 visible = false
-layout_mode = 0
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -760.0
+offset_top = 56.0
+offset_right = 760.0
+offset_bottom = 192.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("NarratorBox")
 
-[node name="EndingBlackout" type="ColorRect" parent="." unique_id=1330602555]
-visible = false
-z_index = 1
-layout_mode = 0
+[node name="Line" type="Label" parent="TypingNarrator"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0, 0, 0, 0)
+offset_left = 32.0
+offset_top = 12.0
+offset_right = -32.0
+offset_bottom = -12.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("17_narrator_font")
+theme_override_font_sizes/font_size = 38
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
 
+[node name="TypingCommentTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="TypingIdleTimer" type="Timer" parent="."]
+wait_time = 10.0
+one_shot = true
+
+[connection signal="timeout" from="TypingIdleTimer" to="." method="_on_typing_idle_timer_timeout"]
+[connection signal="timeout" from="TypingCommentTimer" to="." method="_on_typing_comment_timer_timeout"]
 [connection signal="gui_input" from="Hero" to="." method="_on_hero_input"]
 [connection signal="pressed" from="CheerFrame" to="." method="_on_buy_cheer_pressed"]
 [connection signal="pressed" from="HoofButton" to="." method="_on_buy_hoof_pressed"]
 [connection signal="timeout" from="AutoStepTimer" to="." method="_on_auto_step_timer_timeout"]
 [connection signal="timeout" from="InactivityTimer" to="." method="_on_inactivity_timer_timeout"]
 [connection signal="typing_completed" from="TypingOverlay/TypingKeyboard" to="." method="_show_evaluation_screen"]
-[connection signal="evaluation_confirmed" from="EvaluationScreen" to="." method="_on_evaluation_confirmed"]

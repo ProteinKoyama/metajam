@@ -1,10 +1,15 @@
 extends Control
 
+signal typing_idle_line_finished
+
 const NARRATOR_PATH := "res://narrator.json"
+const EVALUATION_SCENE: PackedScene = preload("res://evaluation_screen.tscn")
 const BGM_FADE_SECONDS: float = 1.0
 const ENCOUNTER_INTERVAL: int = 50
-const TYPING_STEP_THRESHOLD: int = 1001
+const TYPING_STEP_THRESHOLD: int = 500
 const TYPING_ANNOUNCEMENT_SECONDS: float = 4.0
+const TYPING_COMMENT_MIN_DELAY: float = 4.0
+const TYPING_COMMENT_MAX_DELAY: float = 10.0
 
 enum Encounter { NONE, APPROACHING, ATTACKING }
 
@@ -39,8 +44,10 @@ var slimes_required: int = 1
 var queued_encounters: int = 0
 var encounter: Encounter = Encounter.NONE
 var narrator_lines: Dictionary = {}
-var inactivity_warning_shown: bool = false
 var typing_switch_pending: bool = false
+var evaluation_transition_started: bool = false
+var typing_intro_playing: bool = false
+var typing_idle_line_playing: bool = false
 
 @onready var hero: TextureRect = $Hero
 @onready var step_popup_template: Label = $Hero/StepPopupTemplate
@@ -68,10 +75,12 @@ var typing_switch_pending: bool = false
 @onready var level_status: Label = $LevelStatus
 @onready var narrator_panel: Panel = $Narrator
 @onready var narrator_line: Label = $Narrator/Line
+@onready var typing_narrator: Panel = $TypingNarrator
+@onready var typing_narrator_line: Label = $TypingNarrator/Line
+@onready var typing_comment_timer: Timer = $TypingCommentTimer
+@onready var typing_idle_timer: Timer = $TypingIdleTimer
 @onready var inactivity_timer: Timer = $InactivityTimer
 @onready var typing_overlay: TextureRect = $TypingOverlay
-@onready var evaluation_screen: Control = $EvaluationScreen
-@onready var ending_blackout: ColorRect = $EndingBlackout
 @onready var hero_bgm: AudioStreamPlayer = $HeroBGM
 @onready var typing_bgm: AudioStreamPlayer = $TypingBGM
 
@@ -87,35 +96,46 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if typing_overlay.visible or evaluation_screen.visible or typing_switch_pending:
+	if evaluation_transition_started or typing_switch_pending:
 		return
 	if event is InputEventMouseButton or event is InputEventKey or event is InputEventScreenTouch:
 		if event.is_pressed() and not event.is_echo():
-			inactivity_timer.start()
-			if inactivity_warning_shown:
-				inactivity_warning_shown = false
-				narrator_panel.hide()
+			if typing_overlay.visible:
+				typing_idle_timer.start()
+			else:
+				inactivity_timer.start()
 
 
 func _on_inactivity_timer_timeout() -> void:
-	if not inactivity_warning_shown:
-		inactivity_warning_shown = true
-		_show_narrator_line("idle_warning")
-		return
-
-	_switch_to_typing()
+	_announce_typing_switch()
 
 
 func _announce_typing_switch() -> void:
+	if typing_switch_pending or typing_overlay.visible:
+		return
 	typing_switch_pending = true
 	inactivity_timer.stop()
-	_show_narrator_line("typing_after_1000_steps")
-	await get_tree().create_timer(TYPING_ANNOUNCEMENT_SECONDS).timeout
+	await _play_narrator_lines("typing_transition", narrator_panel, narrator_line)
 	_switch_to_typing()
 
 
+func _play_narrator_lines(key: String, panel: Panel, subtitle: Label) -> void:
+	var lines: Variant = narrator_lines.get(key)
+	if lines is Array:
+		for line in lines:
+			if line is String and not line.is_empty():
+				subtitle.text = line
+				panel.show()
+				await get_tree().create_timer(TYPING_ANNOUNCEMENT_SECONDS).timeout
+				if panel == typing_narrator and typing_idle_line_playing:
+					await typing_idle_line_finished
+				if evaluation_transition_started:
+					return
+	panel.hide()
+
+
 func _switch_to_typing() -> void:
-	if typing_overlay.visible or evaluation_screen.visible:
+	if typing_overlay.visible:
 		return
 
 	typing_switch_pending = false
@@ -126,28 +146,67 @@ func _switch_to_typing() -> void:
 	hoof_button.focus_mode = Control.FOCUS_NONE
 	narrator_panel.hide()
 	typing_overlay.show()
+	typing_idle_timer.start()
 	_crossfade_to_typing_bgm()
+	typing_intro_playing = true
+	await _play_narrator_lines("typing_intro", typing_narrator, typing_narrator_line)
+	typing_intro_playing = false
+	if not evaluation_transition_started:
+		_schedule_typing_comment()
+
+
+func _schedule_typing_comment() -> void:
+	typing_comment_timer.start(randf_range(TYPING_COMMENT_MIN_DELAY, TYPING_COMMENT_MAX_DELAY))
+
+
+func _on_typing_comment_timer_timeout() -> void:
+	if typing_narrator.visible:
+		typing_narrator.hide()
+		_schedule_typing_comment()
+		return
+
+	var comments: Variant = narrator_lines.get("typing_comments")
+	if not comments is Array or comments.is_empty():
+		return
+	var comment: Variant = comments.pick_random()
+	if not comment is String or comment.is_empty():
+		_schedule_typing_comment()
+		return
+
+	typing_narrator_line.text = comment
+	typing_narrator.show()
+	typing_comment_timer.start(TYPING_ANNOUNCEMENT_SECONDS)
+
+
+func _on_typing_idle_timer_timeout() -> void:
+	var line: Variant = narrator_lines.get("typing_idle")
+	if evaluation_transition_started or not line is String or line.is_empty():
+		return
+
+	typing_comment_timer.stop()
+	typing_idle_line_playing = true
+	typing_narrator_line.text = line
+	typing_narrator.show()
+	await get_tree().create_timer(TYPING_ANNOUNCEMENT_SECONDS).timeout
+	if evaluation_transition_started:
+		return
+
+	typing_narrator.hide()
+	typing_idle_line_playing = false
+	if not typing_intro_playing:
+		_schedule_typing_comment()
+	typing_idle_line_finished.emit()
 
 
 func _show_evaluation_screen() -> void:
-	typing_overlay.hide()
-	evaluation_screen.show()
-	move_child(narrator_panel, -1)
-	_show_narrator_line("evaluation_request")
-	_fade_out_bgm()
-
-
-func _on_evaluation_confirmed(_score: int) -> void:
-	if ending_blackout.visible:
-		return
-
-	var focused_control: Control = get_viewport().gui_get_focus_owner()
-	if focused_control != null:
-		focused_control.release_focus()
-
-	ending_blackout.show()
-	var fade: Tween = create_tween()
-	fade.tween_property(ending_blackout, "color:a", 1.0, 1.0)
+	evaluation_transition_started = true
+	typing_comment_timer.stop()
+	typing_idle_timer.stop()
+	typing_narrator.hide()
+	await _fade_out_bgm()
+	var result: Error = get_tree().change_scene_to_packed(EVALUATION_SCENE)
+	if result != OK:
+		push_error("Could not open the evaluation screen: %s" % error_string(result))
 
 
 func _crossfade_to_typing_bgm() -> void:
@@ -170,6 +229,7 @@ func _fade_out_bgm() -> void:
 	bgm_tween.tween_property(typing_bgm, "volume_linear", 0.0, BGM_FADE_SECONDS)
 	bgm_tween.chain().tween_callback(hero_bgm.stop)
 	bgm_tween.parallel().tween_callback(typing_bgm.stop)
+	await bgm_tween.finished
 
 
 func _on_hero_input(event: InputEvent) -> void:
@@ -254,10 +314,10 @@ func _update_level_status() -> void:
 func _push_hero(step_amount: int = 1) -> void:
 	var previous_steps: int = steps
 	steps += step_amount
-	if not typing_overlay.visible and not evaluation_screen.visible and not typing_switch_pending:
+	if not typing_overlay.visible and not typing_switch_pending:
 		if previous_steps < TYPING_STEP_THRESHOLD and steps >= TYPING_STEP_THRESHOLD:
 			_announce_typing_switch()
-		elif not inactivity_warning_shown:
+		else:
 			for reached_step in range(previous_steps + 1, steps + 1):
 				_show_narrator_line(str(reached_step))
 	gold += step_amount
