@@ -370,10 +370,12 @@ wait_time = 2.0
 
 [node name="HeroBGM" type="AudioStreamPlayer" parent="." unique_id=1282775424]
 stream = ExtResource("8_hero_bgm")
+bus = &"BGM"
 autoplay = true
 
 [node name="TypingBGM" type="AudioStreamPlayer" parent="." unique_id=214401545]
 stream = ExtResource("14_typing_bgm")
+bus = &"BGM"
 
 [node name="InactivityTimer" type="Timer" parent="." unique_id=1737452784]
 wait_time = 60.0

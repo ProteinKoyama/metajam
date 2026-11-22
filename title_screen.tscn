@@ -361,6 +361,7 @@ z_index = 100
 
 [node name="MouseSound" type="AudioStreamPlayer" parent="." unique_id=665482019]
 stream = ExtResource("10_xfn3p")
+bus = &"SE"
 
 [connection signal="pressed" from="HeroButton" to="." method="_on_hero_button_pressed"]
 [connection signal="pressed" from="Taskbar/Settings" to="." method="_on_settings_pressed"]
