@@ -472,6 +472,15 @@ stream = ExtResource("19_d13ii")
 [node name="LevelUpSound" type="AudioStreamPlayer" parent="." unique_id=1090748399]
 stream = ExtResource("20_1u8w0")
 
+[node name="DefeatSound" type="AudioStreamPlayer" parent="." unique_id=1893171619]
+stream = ExtResource("18_ryguw")
+
+[node name="GainSound" type="AudioStreamPlayer" parent="." unique_id=1220497775]
+stream = ExtResource("19_d13ii")
+
+[node name="LevelUpSound" type="AudioStreamPlayer" parent="." unique_id=1090748399]
+stream = ExtResource("20_1u8w0")
+
 [connection signal="gui_input" from="Hero" to="." method="_on_hero_input"]
 [connection signal="pressed" from="CheerFrame" to="." method="_on_buy_cheer_pressed"]
 [connection signal="pressed" from="HoofButton" to="." method="_on_buy_hoof_pressed"]
