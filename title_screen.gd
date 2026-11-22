@@ -107,7 +107,7 @@ func _on_hero_button_pressed() -> void:
 	$WhiteScreen.show()
 	$MouseSound.play()
 	await $MouseSound.finished
-	var result: Error = get_tree().change_scene_to_packed(HERO_CLICKER_SCENE)
+	var result: Error = get_tree().change_scene_to_packed(HERO_PROLOGUE_SCENE)
 	if result != OK:
 		scene_transition_started = false
 		hero_button.disabled = false
