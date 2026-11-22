@@ -14,7 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://w0v850243mdl" path="res://Asset/screen1_battle_2.png" id="12_battle"]
 [ext_resource type="Texture2D" uid="uid://beoolq22ify84" path="res://Asset/screen2_hc.png" id="13_typing"]
 [ext_resource type="AudioStream" uid="uid://c1lmkisdjgk1q" path="res://Asset/BGM_Typing.ogg" id="14_typing_bgm"]
-[ext_resource type="PackedScene" path="res://typing_keyboard.tscn" id="15_keyboard"]
+[ext_resource type="PackedScene" uid="uid://ccxovyrn3xnve" path="res://typing_keyboard.tscn" id="15_keyboard"]
 [ext_resource type="FontFile" uid="uid://otrgh6crahlj" path="res://Asset/NotoSansJP-Regular.otf" id="17_narrator_font"]
 [ext_resource type="AudioStream" uid="uid://bd8o2ei52arcs" path="res://Asset/SE_Defeat.ogg" id="18_ryguw"]
 [ext_resource type="AudioStream" uid="uid://bas0b4ngmcar1" path="res://Asset/SE_Gain.ogg" id="19_d13ii"]
@@ -373,13 +373,12 @@ wait_time = 2.0
 
 [node name="HeroBGM" type="AudioStreamPlayer" parent="." unique_id=1282775424]
 stream = ExtResource("8_hero_bgm")
-volume_db = -2.0
-autoplay = true
+volume_db = -3.0
 bus = &"BGM"
 
 [node name="TypingBGM" type="AudioStreamPlayer" parent="." unique_id=214401545]
 stream = ExtResource("14_typing_bgm")
-volume_db = -2.0
+volume_db = -3.0
 bus = &"BGM"
 
 [node name="InactivityTimer" type="Timer" parent="." unique_id=1737452784]
@@ -399,11 +398,10 @@ expand_mode = 1
 
 [node name="TypingKeyboard" parent="TypingOverlay" unique_id=750289400 instance=ExtResource("15_keyboard")]
 layout_mode = 1
-grow_horizontal = 2
-grow_vertical = 2
 
-[node name="TypingNarrator" type="Panel" parent="."]
+[node name="TypingNarrator" type="Panel" parent="." unique_id=514508606]
 visible = false
+layout_mode = 0
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -760.0
@@ -413,14 +411,14 @@ offset_bottom = 192.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("NarratorBox")
 
-[node name="Line" type="Label" parent="TypingNarrator"]
+[node name="Line" type="Label" parent="TypingNarrator" unique_id=1600684511]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 32.0
 offset_top = 12.0
 offset_right = -32.0
 offset_bottom = -12.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("17_narrator_font")
 theme_override_font_sizes/font_size = 38
@@ -428,8 +426,9 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="TypingInterrupt" type="Panel" parent="."]
+[node name="TypingInterrupt" type="Panel" parent="." unique_id=617738918]
 visible = false
+layout_mode = 0
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -760.0
@@ -439,14 +438,14 @@ offset_bottom = 192.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("NarratorBox")
 
-[node name="Line" type="Label" parent="TypingInterrupt"]
+[node name="Line" type="Label" parent="TypingInterrupt" unique_id=946486331]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 32.0
 offset_top = 12.0
 offset_right = -32.0
 offset_bottom = -12.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("17_narrator_font")
 theme_override_font_sizes/font_size = 38
@@ -454,15 +453,13 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="TypingCommentTimer" type="Timer" parent="."]
+[node name="TypingCommentTimer" type="Timer" parent="." unique_id=961619248]
 one_shot = true
 
-[node name="TypingIdleTimer" type="Timer" parent="."]
+[node name="TypingIdleTimer" type="Timer" parent="." unique_id=1594547192]
 wait_time = 10.0
 one_shot = true
 
-[connection signal="timeout" from="TypingIdleTimer" to="." method="_on_typing_idle_timer_timeout"]
-[connection signal="timeout" from="TypingCommentTimer" to="." method="_on_typing_comment_timer_timeout"]
 [node name="DefeatSound" type="AudioStreamPlayer" parent="." unique_id=1893171619]
 stream = ExtResource("18_ryguw")
 bus = &"SE"
@@ -480,5 +477,7 @@ bus = &"SE"
 [connection signal="pressed" from="HoofButton" to="." method="_on_buy_hoof_pressed"]
 [connection signal="timeout" from="AutoStepTimer" to="." method="_on_auto_step_timer_timeout"]
 [connection signal="timeout" from="InactivityTimer" to="." method="_on_inactivity_timer_timeout"]
-[connection signal="typing_completed" from="TypingOverlay/TypingKeyboard" to="." method="_show_evaluation_screen"]
 [connection signal="key_rewritten" from="TypingOverlay/TypingKeyboard" to="." method="_on_typing_key_rewritten"]
+[connection signal="typing_completed" from="TypingOverlay/TypingKeyboard" to="." method="_show_evaluation_screen"]
+[connection signal="timeout" from="TypingCommentTimer" to="." method="_on_typing_comment_timer_timeout"]
+[connection signal="timeout" from="TypingIdleTimer" to="." method="_on_typing_idle_timer_timeout"]

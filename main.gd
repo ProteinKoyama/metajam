@@ -87,6 +87,12 @@ var active_typing_line: String = ""
 @onready var typing_bgm: AudioStreamPlayer = $TypingBGM
 
 func _ready() -> void:
+	var prologue_bgm: AudioStreamPlayer = get_tree().root.get_node_or_null("PrologueBGM") as AudioStreamPlayer
+	if prologue_bgm != null:
+		hero_bgm.queue_free()
+		hero_bgm = prologue_bgm
+	else:
+		hero_bgm.play()
 	set_process(false)
 	_update_gold_display()
 	_update_cheer_display()
