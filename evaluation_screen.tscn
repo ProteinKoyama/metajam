@@ -222,6 +222,20 @@ theme_override_font_sizes/font_size = 26
 mouse_default_cursor_shape = 2
 text = "1桁削除"
 
+[node name="Minus" type="Button" parent="."]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -258.0
+offset_top = -270.0
+offset_right = -94.0
+offset_bottom = -198.0
+theme_override_font_sizes/font_size = 46
+text = "−"
+tooltip_text = "点数の正負を切り替える"
+mouse_default_cursor_shape = 2
+
 [node name="Confirm" type="Button" parent="."]
 anchor_left = 0.5
 anchor_top = 1.0

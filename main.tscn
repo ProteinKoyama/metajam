@@ -376,7 +376,7 @@ autoplay = true
 stream = ExtResource("14_typing_bgm")
 
 [node name="InactivityTimer" type="Timer" parent="." unique_id=1737452784]
-wait_time = 90.0
+wait_time = 60.0
 one_shot = true
 autostart = true
 
@@ -421,6 +421,32 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
+[node name="TypingInterrupt" type="Panel" parent="."]
+visible = false
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -760.0
+offset_top = 56.0
+offset_right = 760.0
+offset_bottom = 192.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("NarratorBox")
+
+[node name="Line" type="Label" parent="TypingInterrupt"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = 12.0
+offset_right = -32.0
+offset_bottom = -12.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("17_narrator_font")
+theme_override_font_sizes/font_size = 38
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
 [node name="TypingCommentTimer" type="Timer" parent="."]
 one_shot = true
 
@@ -436,3 +462,4 @@ one_shot = true
 [connection signal="timeout" from="AutoStepTimer" to="." method="_on_auto_step_timer_timeout"]
 [connection signal="timeout" from="InactivityTimer" to="." method="_on_inactivity_timer_timeout"]
 [connection signal="typing_completed" from="TypingOverlay/TypingKeyboard" to="." method="_show_evaluation_screen"]
+[connection signal="key_rewritten" from="TypingOverlay/TypingKeyboard" to="." method="_on_typing_key_rewritten"]

@@ -1,6 +1,7 @@
 extends Control
 
 signal typing_completed
+signal key_rewritten
 
 @export_range(1, 100) var required_words: int = 10
 
@@ -37,6 +38,7 @@ func _on_key_pressed(key: Button) -> void:
 	var letter: String = key.text.to_lower()
 	if letter != expected:
 		key.text = expected.to_upper()
+		key_rewritten.emit()
 		return
 
 	entered_letters += 1

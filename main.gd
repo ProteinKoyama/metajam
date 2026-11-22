@@ -44,7 +44,9 @@ var encounter: Encounter = Encounter.NONE
 var narrator_lines: Dictionary = {}
 var typing_switch_pending: bool = false
 var evaluation_transition_started: bool = false
-var typing_idle_line_pending: bool = false
+var key_rewrite_announced: bool = false
+var pending_typing_lines: Array[String] = []
+var active_typing_line: String = ""
 
 @onready var hero: TextureRect = $Hero
 @onready var step_popup_template: Label = $Hero/StepPopupTemplate
@@ -74,6 +76,8 @@ var typing_idle_line_pending: bool = false
 @onready var narrator_line: Label = $Narrator/Line
 @onready var typing_narrator: Panel = $TypingNarrator
 @onready var typing_narrator_line: Label = $TypingNarrator/Line
+@onready var typing_interrupt: Panel = $TypingInterrupt
+@onready var typing_interrupt_line: Label = $TypingInterrupt/Line
 @onready var typing_comment_timer: Timer = $TypingCommentTimer
 @onready var typing_idle_timer: Timer = $TypingIdleTimer
 @onready var inactivity_timer: Timer = $InactivityTimer
@@ -126,8 +130,8 @@ func _play_narrator_lines(key: String, panel: Panel, subtitle: Label) -> void:
 				await get_tree().create_timer(TYPING_ANNOUNCEMENT_SECONDS).timeout
 				if evaluation_transition_started and key != "typing_outro":
 					return
-				if panel == typing_narrator and typing_idle_line_pending:
-					await _play_typing_idle_line()
+				if panel == typing_narrator and not pending_typing_lines.is_empty():
+					await _play_pending_typing_lines()
 					if evaluation_transition_started:
 						return
 	panel.hide()
@@ -159,8 +163,7 @@ func _schedule_typing_comment() -> void:
 func _on_typing_comment_timer_timeout() -> void:
 	if typing_narrator.visible:
 		typing_narrator.hide()
-		if typing_idle_line_pending:
-			await _play_typing_idle_line()
+		await _play_pending_typing_lines()
 		if not evaluation_transition_started:
 			_schedule_typing_comment()
 		return
@@ -179,30 +182,51 @@ func _on_typing_comment_timer_timeout() -> void:
 
 
 func _on_typing_idle_timer_timeout() -> void:
-	if evaluation_transition_started:
+	_queue_typing_line("typing_idle")
+
+
+func _on_typing_key_rewritten() -> void:
+	if key_rewrite_announced or evaluation_transition_started:
+		return
+	key_rewrite_announced = true
+
+	var line: Variant = narrator_lines.get("typing_key_rewritten")
+	if not line is String or line.is_empty():
 		return
 
-	typing_idle_line_pending = true
+	typing_interrupt_line.text = line
+	typing_narrator.modulate.a = 0.0
+	typing_interrupt.show()
+	await get_tree().create_timer(TYPING_ANNOUNCEMENT_SECONDS).timeout
+	typing_interrupt.hide()
+	typing_narrator.modulate.a = 1.0
+
+
+func _queue_typing_line(key: String) -> void:
+	if evaluation_transition_started or key == active_typing_line or pending_typing_lines.has(key):
+		return
+
+	pending_typing_lines.append(key)
 	if typing_narrator.visible:
 		return
 
 	typing_comment_timer.stop()
-	await _play_typing_idle_line()
+	await _play_pending_typing_lines()
 	if not evaluation_transition_started:
 		_schedule_typing_comment()
 
 
-func _play_typing_idle_line() -> void:
-	typing_idle_line_pending = false
-	var line: Variant = narrator_lines.get("typing_idle")
-	if not line is String or line.is_empty():
-		return
-
-	typing_narrator_line.text = line
-	typing_narrator.show()
-	await get_tree().create_timer(TYPING_ANNOUNCEMENT_SECONDS).timeout
-	if not evaluation_transition_started:
-		typing_narrator.hide()
+func _play_pending_typing_lines() -> void:
+	while not pending_typing_lines.is_empty() and not evaluation_transition_started:
+		active_typing_line = pending_typing_lines.pop_front()
+		var line: Variant = narrator_lines.get(active_typing_line)
+		if line is String and not line.is_empty():
+			typing_narrator_line.text = line
+			typing_narrator.show()
+			await get_tree().create_timer(TYPING_ANNOUNCEMENT_SECONDS).timeout
+			if not evaluation_transition_started:
+				typing_narrator.hide()
+		active_typing_line = ""
 
 
 func _show_evaluation_screen() -> void:
@@ -211,7 +235,9 @@ func _show_evaluation_screen() -> void:
 	evaluation_transition_started = true
 	typing_comment_timer.stop()
 	typing_idle_timer.stop()
-	typing_idle_line_pending = false
+	pending_typing_lines.clear()
+	typing_interrupt.hide()
+	typing_narrator.modulate.a = 1.0
 	typing_narrator.hide()
 	await _play_narrator_lines("typing_outro", typing_narrator, typing_narrator_line)
 	await _fade_out_bgm()
