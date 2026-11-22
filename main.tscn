@@ -14,10 +14,9 @@
 [ext_resource type="Texture2D" uid="uid://w0v850243mdl" path="res://Asset/screen1_battle_2.png" id="12_battle"]
 [ext_resource type="Texture2D" uid="uid://beoolq22ify84" path="res://Asset/screen2_hc.png" id="13_typing"]
 [ext_resource type="AudioStream" uid="uid://c1lmkisdjgk1q" path="res://Asset/BGM_Typing.ogg" id="14_typing_bgm"]
-
 [ext_resource type="PackedScene" path="res://typing_keyboard.tscn" id="15_keyboard"]
 [ext_resource type="PackedScene" path="res://evaluation_screen.tscn" id="16_evaluation"]
-[ext_resource type="FontFile" path="res://Asset/NotoSansJP-Regular.otf" id="17_narrator_font"]
+[ext_resource type="FontFile" uid="uid://otrgh6crahlj" path="res://Asset/NotoSansJP-Regular.otf" id="17_narrator_font"]
 
 [sub_resource type="Theme" id="ClickerTheme"]
 default_font = ExtResource("6_7mycd")
@@ -139,9 +138,9 @@ visible = false
 texture_filter = 1
 centered = false
 
-[node name="StepPopupTemplate" type="Label" parent="Hero"]
+[node name="StepPopupTemplate" type="Label" parent="Hero" unique_id=720066124]
 visible = false
-mouse_filter = 2
+layout_mode = 0
 theme_override_colors/font_color = Color(1, 0.86, 0.32, 1)
 theme_override_colors/font_outline_color = Color(0.12, 0.08, 0.04, 1)
 theme_override_constants/outline_size = 8
@@ -245,7 +244,7 @@ text = "？？？"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HoofButton" type="Button" parent="."]
+[node name="HoofButton" type="Button" parent="." unique_id=5924558]
 visible = false
 layout_mode = 0
 offset_left = 1080.0
@@ -259,7 +258,7 @@ theme_override_styles/hover = SubResource("Frame")
 theme_override_styles/disabled = SubResource("Frame")
 disabled = true
 
-[node name="Text" type="Label" parent="HoofButton"]
+[node name="Text" type="Label" parent="HoofButton" unique_id=1423141661]
 layout_mode = 0
 offset_left = 20.0
 offset_top = 20.0
@@ -271,7 +270,7 @@ text = "うまのひづめ"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Price" type="Label" parent="HoofButton"]
+[node name="Price" type="Label" parent="HoofButton" unique_id=1133418065]
 layout_mode = 0
 offset_left = 480.0
 offset_top = 20.0
@@ -283,7 +282,7 @@ text = "100 ゴールド"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="Quantity" type="Label" parent="HoofButton"]
+[node name="Quantity" type="Label" parent="HoofButton" unique_id=1992103464]
 layout_mode = 0
 offset_left = 480.0
 offset_top = 82.0
@@ -373,11 +372,9 @@ wait_time = 2.0
 [node name="HeroBGM" type="AudioStreamPlayer" parent="." unique_id=1282775424]
 stream = ExtResource("8_hero_bgm")
 autoplay = true
-bus = &"BGM"
 
 [node name="TypingBGM" type="AudioStreamPlayer" parent="." unique_id=214401545]
 stream = ExtResource("14_typing_bgm")
-bus = &"BGM"
 
 [node name="InactivityTimer" type="Timer" parent="." unique_id=1737452784]
 wait_time = 60.0
@@ -393,14 +390,30 @@ mouse_filter = 0
 texture = ExtResource("13_typing")
 expand_mode = 1
 
-[node name="TypingKeyboard" parent="TypingOverlay" instance=ExtResource("15_keyboard")]
+[node name="TypingKeyboard" parent="TypingOverlay" unique_id=750289400 instance=ExtResource("15_keyboard")]
+layout_mode = 1
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="EvaluationScreen" parent="." instance=ExtResource("16_evaluation")]
+[node name="EvaluationScreen" parent="." unique_id=863850494 instance=ExtResource("16_evaluation")]
 visible = false
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
 
-[connection signal="typing_completed" from="TypingOverlay/TypingKeyboard" to="." method="_show_evaluation_screen"]
+[node name="EndingBlackout" type="ColorRect" parent="." unique_id=1330602555]
+visible = false
+z_index = 1
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0)
+
 [connection signal="gui_input" from="Hero" to="." method="_on_hero_input"]
 [connection signal="pressed" from="CheerFrame" to="." method="_on_buy_cheer_pressed"]
 [connection signal="pressed" from="HoofButton" to="." method="_on_buy_hoof_pressed"]
 [connection signal="timeout" from="AutoStepTimer" to="." method="_on_auto_step_timer_timeout"]
 [connection signal="timeout" from="InactivityTimer" to="." method="_on_inactivity_timer_timeout"]
+[connection signal="typing_completed" from="TypingOverlay/TypingKeyboard" to="." method="_show_evaluation_screen"]
+[connection signal="evaluation_confirmed" from="EvaluationScreen" to="." method="_on_evaluation_confirmed"]

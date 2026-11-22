@@ -1,43 +1,19 @@
 extends ColorRect
 
-signal evaluation_confirmed(score: int, ratings: Dictionary)
+signal evaluation_confirmed(score: int)
 
 const MAX_SCORE_TEXT := "9223372036854775807"
-const STAR_YELLOW := Color("d48e00")
-const STAR_INK := Color("262626")
-
-var ratings: Dictionary = {}
 var accepted_score_text: String = ""
 
-@onready var rating_rows: Array[Control] = [
-	$Form/Illustration, $Form/Sound, $Form/Scenario, $Form/Fun
-]
 @onready var score_input: LineEdit = $Form/Score
 @onready var status: Label = $Form/Status
 @onready var confirm: Button = $Form/Confirm
 
 
 func _ready() -> void:
-	for row in rating_rows:
-		for value in range(1, 6):
-			var star: Button = row.get_node("Star%d" % value)
-			star.pressed.connect(_set_rating.bind(row, value))
-		_set_rating(row, 1)
 	confirm.pressed.connect(_confirm_rating)
 	score_input.text_changed.connect(_on_score_changed)
 	score_input.text_submitted.connect(_on_score_submitted)
-
-
-func _set_rating(row: Control, value: int) -> void:
-	ratings[row.name] = value
-	for index in range(1, 6):
-		var star: Button = row.get_node("Star%d" % index)
-		var selected: bool = index <= value
-		star.text = "★" if selected else "☆"
-		var color: Color = STAR_YELLOW if selected else STAR_INK
-		star.add_theme_color_override("font_color", color)
-		star.add_theme_color_override("font_hover_color", color)
-		star.add_theme_color_override("font_pressed_color", color)
 
 
 func _on_score_changed(value: String) -> void:
@@ -80,4 +56,4 @@ func _confirm_rating() -> void:
 
 	var score: int = accepted_score_text.to_int()
 	status.text = "評価を受け付けました。"
-	evaluation_confirmed.emit(score, ratings.duplicate())
+	evaluation_confirmed.emit(score)

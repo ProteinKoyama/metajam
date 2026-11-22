@@ -71,6 +71,7 @@ var typing_switch_pending: bool = false
 @onready var inactivity_timer: Timer = $InactivityTimer
 @onready var typing_overlay: TextureRect = $TypingOverlay
 @onready var evaluation_screen: Control = $EvaluationScreen
+@onready var ending_blackout: ColorRect = $EndingBlackout
 @onready var hero_bgm: AudioStreamPlayer = $HeroBGM
 @onready var typing_bgm: AudioStreamPlayer = $TypingBGM
 
@@ -134,6 +135,19 @@ func _show_evaluation_screen() -> void:
 	move_child(narrator_panel, -1)
 	_show_narrator_line("evaluation_request")
 	_fade_out_bgm()
+
+
+func _on_evaluation_confirmed(_score: int) -> void:
+	if ending_blackout.visible:
+		return
+
+	var focused_control: Control = get_viewport().gui_get_focus_owner()
+	if focused_control != null:
+		focused_control.release_focus()
+
+	ending_blackout.show()
+	var fade: Tween = create_tween()
+	fade.tween_property(ending_blackout, "color:a", 1.0, 1.0)
 
 
 func _crossfade_to_typing_bgm() -> void:
