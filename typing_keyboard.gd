@@ -14,6 +14,7 @@ const WORDS: Array[String] = [
 var current_word_index: int = -1
 var completed_words: int = 0
 var entered_letters: int = 0
+var first_sound: bool = false
 
 @onready var rows: VBoxContainer = $Keyboard/Rows
 @onready var prompt: Label = $Prompt
@@ -21,6 +22,7 @@ var entered_letters: int = 0
 
 
 func _ready() -> void:
+	first_sound = false
 	_pick_next_word()
 	prompt.resized.connect(_fit_prompt)
 	for row in rows.get_children():
@@ -40,7 +42,8 @@ func _on_key_pressed(key: Button) -> void:
 		key.text = expected.to_upper()
 		key_rewritten.emit()
 		return
-
+	
+	$TypingSound.play()
 	entered_letters += 1
 	prompt_progress.visible_characters = entered_letters
 	if entered_letters == word.length():
@@ -62,6 +65,10 @@ func _pick_next_word() -> void:
 	prompt_progress.text = prompt.text
 	prompt_progress.visible_characters = 0
 	_fit_prompt()
+	if first_sound:
+		$QuestionSound.play()
+	else:
+		first_sound = true	
 
 
 func _fit_prompt() -> void:

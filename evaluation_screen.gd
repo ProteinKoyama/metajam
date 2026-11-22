@@ -81,6 +81,7 @@ func _on_key_pressed(key: Button) -> void:
 
 	score_value.text = ("−" if score_negative else "") + score_digits
 	status.text = ""
+	$MouseSound.play()
 
 
 func _confirm_rating() -> void:
@@ -90,6 +91,7 @@ func _confirm_rating() -> void:
 		status.text = "点数を入力してください。"
 		return
 
+	$MouseSound.play()
 	var score: int
 	if score_negative:
 		score = MIN_SCORE if score_digits == MIN_SCORE_MAGNITUDE_TEXT else -score_digits.to_int()
