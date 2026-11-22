@@ -218,6 +218,8 @@ func _attack_slime() -> void:
 		battle_pose.position.y = hero.size.y - frame.get_height()
 		await get_tree().create_timer(0.14).timeout
 
+	$DefeatSound.play()
+
 	for i in range(6):
 		slime.texture = slime_hit_texture if i % 2 == 0 else slime_idle_texture
 		await get_tree().create_timer(0.08).timeout
@@ -297,6 +299,7 @@ func _on_buy_cheer_pressed() -> void:
 	auto_step_timer.wait_time = interval
 	_update_cheer_display()
 	_update_gold_display()
+	$GainSound.play()
 
 
 func _add_hand() -> void:
@@ -336,6 +339,7 @@ func _on_buy_hoof_pressed() -> void:
 	hoof_cost = _increase_by_fifteen_percent(hoof_cost)
 	_update_hoof_display()
 	_update_gold_display()
+	$GainSound.play()
 
 
 func _update_gold_display() -> void:

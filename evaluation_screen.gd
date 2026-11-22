@@ -54,6 +54,7 @@ func _confirm_rating() -> void:
 		status.text = "点数を入力してください。"
 		return
 
+	$MouseSound.play()
 	var score: int = accepted_score_text.to_int()
 	status.text = "評価を受け付けました。"
 	evaluation_confirmed.emit(score)
