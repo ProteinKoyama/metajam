@@ -12,10 +12,12 @@ const DIALOGUE: Array[String] = [
 var line_index: int = 0
 
 @onready var dialogue_line: Label = $Dialogue/Line
+@onready var hero_bgm: AudioStreamPlayer = $PrologueBGM
 
 
 func _ready() -> void:
 	dialogue_line.text = DIALOGUE[line_index]
+	hero_bgm.play()
 
 
 func _on_gui_input(event: InputEvent) -> void:
@@ -28,6 +30,13 @@ func _on_gui_input(event: InputEvent) -> void:
 		dialogue_line.text = DIALOGUE[line_index]
 		return
 
+	var playback_position: float = hero_bgm.get_playback_position()
+	hero_bgm.autoplay = false
+	remove_child(hero_bgm)
+	get_tree().root.add_child(hero_bgm)
+	hero_bgm.play(playback_position)
 	var result: Error = get_tree().change_scene_to_packed(HERO_CLICKER_SCENE)
 	if result != OK:
+		get_tree().root.remove_child(hero_bgm)
+		add_child(hero_bgm)
 		push_error("Could not open the hero clicker: %s" % error_string(result))
