@@ -14,6 +14,8 @@ const AUDIO_SETTINGS_PATH := "user://audio_settings.cfg"
 @onready var mixer: Control = $Modal/Window/Mixer
 @onready var volume_slider: HSlider = $Modal/Window/Mixer/VolumeSlider
 @onready var volume_value: Label = $Modal/Window/Mixer/VolumeValue
+@onready var test_timer: Timer = $Modal/Window/Mixer/TestTimer
+@onready var test_sound: AudioStreamPlayer = $Modal/Window/Mixer/TestSound
 
 
 func _ready() -> void:
@@ -22,9 +24,11 @@ func _ready() -> void:
 	_append_font_license("DotGothic16", "res://Asset/DotGothic16-OFL.txt")
 	var saved: ConfigFile = ConfigFile.new()
 	saved.load(AUDIO_SETTINGS_PATH)
-	var previous_bgm_volume: Variant = saved.get_value("volume", "BGM", 100.0)
-	volume_slider.value = clampf(float(saved.get_value("volume", "Master", previous_bgm_volume)), 0.0, 100.0)
+	volume_slider.value = clampf(float(saved.get_value("volume", "Volume", saved.get_value("volume", "BGM", 100.0))), 0.0, 100.0)
 	volume_slider.value_changed.connect(_apply_volume)
+	volume_slider.drag_started.connect(_start_test_sound)
+	volume_slider.drag_ended.connect(_stop_test_sound)
+	test_timer.timeout.connect(test_sound.play)
 	_apply_volume(volume_slider.value)
 
 
@@ -63,7 +67,7 @@ func _close_modal() -> void:
 	var return_focus: TextureButton = sound_button if mixer.visible else settings_button
 	if mixer.visible:
 		var saved: ConfigFile = ConfigFile.new()
-		saved.set_value("volume", "Master", volume_slider.value)
+		saved.set_value("volume", "Volume", volume_slider.value)
 		var result: Error = saved.save(AUDIO_SETTINGS_PATH)
 		if result != OK:
 			push_warning("Could not save audio settings: %s" % error_string(result))
@@ -76,10 +80,19 @@ func _close_modal() -> void:
 
 func _apply_volume(value: float) -> void:
 	volume_value.text = "%d%%" % ceili(value)
-	var bus_index: int = AudioServer.get_bus_index(&"Master")
-	if bus_index >= 0:
-		AudioServer.set_bus_volume_db(bus_index, linear_to_db(maxf(value / 100.0, 0.0001)))
-		AudioServer.set_bus_mute(bus_index, value == 0.0)
+	for bus_name: StringName in [&"BGM", &"SE"]:
+		var bus_index: int = AudioServer.get_bus_index(bus_name)
+		if bus_index >= 0:
+			AudioServer.set_bus_volume_db(bus_index, linear_to_db(maxf(value / 100.0, 0.0001)))
+			AudioServer.set_bus_mute(bus_index, value == 0.0)
+
+
+func _start_test_sound() -> void:
+	test_timer.start()
+
+
+func _stop_test_sound(_value_changed: bool) -> void:
+	test_timer.stop()
 
 
 func _on_hero_button_pressed() -> void:
