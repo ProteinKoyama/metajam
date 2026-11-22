@@ -18,15 +18,20 @@ const AUDIO_SETTINGS_PATH := "user://audio_settings.cfg"
 
 func _ready() -> void:
 	license_text.text = Engine.get_license_text()
-	var font_license: String = FileAccess.get_file_as_string("res://Asset/NotoSansJP-OFL.txt")
-	if not font_license.is_empty():
-		license_text.text += "\n\nNoto Sans JP\n\n" + font_license
+	_append_font_license("Noto Sans JP", "res://Asset/NotoSansJP-OFL.txt")
+	_append_font_license("DotGothic16", "res://Asset/DotGothic16-OFL.txt")
 	var saved: ConfigFile = ConfigFile.new()
 	saved.load(AUDIO_SETTINGS_PATH)
 	var previous_bgm_volume: Variant = saved.get_value("volume", "BGM", 100.0)
 	volume_slider.value = clampf(float(saved.get_value("volume", "Master", previous_bgm_volume)), 0.0, 100.0)
 	volume_slider.value_changed.connect(_apply_volume)
 	_apply_volume(volume_slider.value)
+
+
+func _append_font_license(font_name: String, path: String) -> void:
+	var font_license: String = FileAccess.get_file_as_string(path)
+	if not font_license.is_empty():
+		license_text.text += "\n\n%s\n\n%s" % [font_name, font_license]
 
 
 func _unhandled_key_input(event: InputEvent) -> void:

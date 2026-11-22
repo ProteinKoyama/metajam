@@ -4,10 +4,45 @@
 
 [ext_resource type="FontFile" path="res://Asset/NotoSansJP-Regular.otf" id="2_font"]
 
+[sub_resource type="StyleBoxFlat" id="ButtonNormal"]
+bg_color = Color(0.45, 0.46, 0.46, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_left = 2
+corner_radius_bottom_right = 2
+
+[sub_resource type="StyleBoxFlat" id="ButtonHover"]
+bg_color = Color(0.37, 0.39, 0.39, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_left = 2
+corner_radius_bottom_right = 2
+
+[sub_resource type="StyleBoxFlat" id="ButtonPressed"]
+bg_color = Color(0.29, 0.31, 0.31, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_left = 2
+corner_radius_bottom_right = 2
+
+[sub_resource type="StyleBoxFlat" id="ButtonDisabled"]
+bg_color = Color(0.57, 0.58, 0.58, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_left = 2
+corner_radius_bottom_right = 2
+
 [sub_resource type="Theme" id="EvaluationTheme"]
 default_font = ExtResource("2_font")
 default_font_size = 40
 Label/colors/font_color = Color(0.15, 0.15, 0.15, 1)
+Button/colors/font_color = Color(0.89, 0.9, 0.9, 1)
+Button/colors/font_hover_color = Color(1, 1, 1, 1)
+Button/colors/font_pressed_color = Color(1, 1, 1, 1)
+Button/styles/normal = SubResource("ButtonNormal")
+Button/styles/hover = SubResource("ButtonHover")
+Button/styles/pressed = SubResource("ButtonPressed")
+Button/styles/disabled = SubResource("ButtonDisabled")
 
 [sub_resource type="StyleBoxFlat" id="ScoreBox"]
 bg_color = Color(1, 1, 1, 1)
@@ -98,90 +133,90 @@ anchor_bottom = 1.0
 offset_left = -258.0
 offset_top = -624.0
 offset_right = 258.0
-offset_bottom = -300.0
+offset_bottom = -284.0
 theme_override_constants/h_separation = 12
 theme_override_constants/v_separation = 12
 columns = 3
 
 [node name="Seven" type="Button" parent="Keypad"]
-custom_minimum_size = Vector2(164, 72)
+custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
 theme_override_font_sizes/font_size = 46
 mouse_default_cursor_shape = 2
 text = "7"
 
 [node name="Eight" type="Button" parent="Keypad"]
-custom_minimum_size = Vector2(164, 72)
+custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
 theme_override_font_sizes/font_size = 46
 mouse_default_cursor_shape = 2
 text = "8"
 
 [node name="Nine" type="Button" parent="Keypad"]
-custom_minimum_size = Vector2(164, 72)
+custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
 theme_override_font_sizes/font_size = 46
 mouse_default_cursor_shape = 2
 text = "9"
 
 [node name="Four" type="Button" parent="Keypad"]
-custom_minimum_size = Vector2(164, 72)
+custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
 theme_override_font_sizes/font_size = 46
 mouse_default_cursor_shape = 2
 text = "4"
 
 [node name="Five" type="Button" parent="Keypad"]
-custom_minimum_size = Vector2(164, 72)
+custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
 theme_override_font_sizes/font_size = 46
 mouse_default_cursor_shape = 2
 text = "5"
 
 [node name="Six" type="Button" parent="Keypad"]
-custom_minimum_size = Vector2(164, 72)
+custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
 theme_override_font_sizes/font_size = 46
 mouse_default_cursor_shape = 2
 text = "6"
 
 [node name="One" type="Button" parent="Keypad"]
-custom_minimum_size = Vector2(164, 72)
+custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
 theme_override_font_sizes/font_size = 46
 mouse_default_cursor_shape = 2
 text = "1"
 
 [node name="Two" type="Button" parent="Keypad"]
-custom_minimum_size = Vector2(164, 72)
+custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
 theme_override_font_sizes/font_size = 46
 mouse_default_cursor_shape = 2
 text = "2"
 
 [node name="Three" type="Button" parent="Keypad"]
-custom_minimum_size = Vector2(164, 72)
+custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
 theme_override_font_sizes/font_size = 46
 mouse_default_cursor_shape = 2
 text = "3"
 
 [node name="Clear" type="Button" parent="Keypad"]
-custom_minimum_size = Vector2(164, 72)
+custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
 theme_override_font_sizes/font_size = 26
 mouse_default_cursor_shape = 2
 text = "全消去"
 
 [node name="Zero" type="Button" parent="Keypad"]
-custom_minimum_size = Vector2(164, 72)
+custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
 theme_override_font_sizes/font_size = 46
 mouse_default_cursor_shape = 2
 text = "0"
 
 [node name="Erase" type="Button" parent="Keypad"]
-custom_minimum_size = Vector2(164, 72)
+custom_minimum_size = Vector2(164, 76)
 layout_mode = 2
 theme_override_font_sizes/font_size = 26
 mouse_default_cursor_shape = 2
@@ -192,10 +227,10 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -130.0
-offset_top = -282.0
-offset_right = 130.0
-offset_bottom = -208.0
+offset_left = -2.0
+offset_top = -270.0
+offset_right = 258.0
+offset_bottom = -198.0
 text = "評価を決定"
 mouse_default_cursor_shape = 2
 

@@ -4,7 +4,10 @@ signal evaluation_confirmed(score: int)
 
 const MAX_SCORE_TEXT := "9223372036854775807"
 const NARRATOR_PATH := "res://narrator.json"
+const SUBTITLE_SECONDS: float = 4.0
 var score_digits: String = ""
+var rating_confirmed: bool = false
+var narrator_lines: Dictionary = {}
 
 @onready var score_value: Label = $Form/Score/Value
 @onready var keypad: GridContainer = $Keypad
@@ -22,13 +25,28 @@ func _ready() -> void:
 	confirm.pressed.connect(_confirm_rating)
 	var lines: Variant = JSON.parse_string(FileAccess.get_file_as_string(NARRATOR_PATH))
 	if lines is Dictionary:
-		var request: Variant = lines.get("evaluation_request")
-		if request is String and not request.is_empty():
-			narrator_line.text = request
+		narrator_lines = lines
+	_play_narrator_lines("evaluation_request")
+
+
+func _play_narrator_lines(key: String) -> void:
+	var lines: Variant = narrator_lines.get(key)
+	if not lines is Array:
+		return
+
+	for line in lines:
+		if line is String and not line.is_empty():
+			narrator_line.text = line
 			narrator.show()
+			await get_tree().create_timer(SUBTITLE_SECONDS).timeout
+			if key == "evaluation_request" and rating_confirmed:
+				return
+	narrator.hide()
 
 
 func _on_key_pressed(key: Button) -> void:
+	if rating_confirmed:
+		return
 	match key.name:
 		&"Clear":
 			score_digits = ""
@@ -49,17 +67,32 @@ func _on_key_pressed(key: Button) -> void:
 
 
 func _confirm_rating() -> void:
-	if ending_blackout.visible:
+	if rating_confirmed:
 		return
 	if score_digits.is_empty():
 		status.text = "点数を入力してください。"
 		return
 
+	var score: int = score_digits.to_int()
+	rating_confirmed = true
+	confirm.disabled = true
 	status.text = "評価を受け付けました。"
 	var focused_control: Control = get_viewport().gui_get_focus_owner()
 	if focused_control != null:
 		focused_control.release_focus()
+	narrator.hide()
+	evaluation_confirmed.emit(score)
+	await _play_narrator_lines(_result_dialogue_key(score))
 	ending_blackout.show()
 	var fade: Tween = create_tween()
 	fade.tween_property(ending_blackout, "color:a", 1.0, 1.0)
-	evaluation_confirmed.emit(score_digits.to_int())
+
+
+func _result_dialogue_key(score: int) -> String:
+	if score <= 0:
+		return "evaluation_result_zero"
+	if score <= 50:
+		return "evaluation_result_low"
+	if score <= 100:
+		return "evaluation_result_mid"
+	return "evaluation_result_high"

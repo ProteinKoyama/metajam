@@ -9,7 +9,18 @@
 .import/
 export.cfg
 export_credentials.cfg
+
+# Editor temporary files and backups
 *.tmp
+*.temp
+*.bak
+*.sw[op]
+*~
+
+# OS metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
 
 # Imported translations (automatically generated from CSV files)
 *.translation
