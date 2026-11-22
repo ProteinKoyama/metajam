@@ -2,6 +2,7 @@ extends Control
 
 const HERO_PROLOGUE_SCENE: PackedScene = preload("res://hero_prologue.tscn")
 const AUDIO_SETTINGS_PATH := "user://audio_settings.cfg"
+var scene_transition_started: bool = false
 
 @onready var hero_button: TextureButton = $HeroButton
 @onready var settings_button: TextureButton = $Taskbar/Settings
@@ -45,10 +46,12 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 
 func _on_settings_pressed() -> void:
+	$MouseSound.play()
 	_open_modal(false)
 
 
 func _on_sound_pressed() -> void:
+	$MouseSound.play()
 	_open_modal(true)
 
 
@@ -64,6 +67,7 @@ func _open_modal(show_mixer: bool) -> void:
 
 
 func _close_modal() -> void:
+	$MouseSound.play()
 	var return_focus: TextureButton = sound_button if mixer.visible else settings_button
 	if mixer.visible:
 		var saved: ConfigFile = ConfigFile.new()
@@ -96,6 +100,16 @@ func _stop_test_sound(_value_changed: bool) -> void:
 
 
 func _on_hero_button_pressed() -> void:
-	var result: Error = get_tree().change_scene_to_packed(HERO_PROLOGUE_SCENE)
+	if scene_transition_started:
+		return
+	scene_transition_started = true
+	hero_button.disabled = true
+	$WhiteScreen.show()
+	$MouseSound.play()
+	await $MouseSound.finished
+	var result: Error = get_tree().change_scene_to_packed(HERO_CLICKER_SCENE)
 	if result != OK:
-		push_error("Could not open the hero prologue: %s" % error_string(result))
+		scene_transition_started = false
+		hero_button.disabled = false
+		$WhiteScreen.hide()
+		push_error("Could not open the hero clicker: %s" % error_string(result))
