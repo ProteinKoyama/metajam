@@ -5,6 +5,7 @@ const EVALUATION_SCENE: PackedScene = preload("res://evaluation_screen.tscn")
 const BGM_FADE_SECONDS: float = 1.0
 const ENCOUNTER_INTERVAL: int = 50
 const TYPING_STEP_THRESHOLD: int = 500
+const CLICKER_GOAL_STEPS: int = 1_000_000
 const TYPING_ANNOUNCEMENT_SECONDS: float = 4.0
 const TYPING_COMMENT_MIN_DELAY: float = 4.0
 const TYPING_COMMENT_MAX_DELAY: float = 10.0
@@ -120,7 +121,7 @@ func _announce_typing_switch() -> void:
 	_switch_to_typing()
 
 
-func _play_narrator_lines(key: String, panel: Panel, subtitle: Label) -> void:
+func _play_narrator_lines(key: String, panel: Panel, subtitle: Label, is_evaluation_dialogue: bool = false) -> void:
 	var lines: Variant = narrator_lines.get(key)
 	if lines is Array:
 		for line in lines:
@@ -128,7 +129,7 @@ func _play_narrator_lines(key: String, panel: Panel, subtitle: Label) -> void:
 				subtitle.text = line
 				panel.show()
 				await get_tree().create_timer(TYPING_ANNOUNCEMENT_SECONDS).timeout
-				if evaluation_transition_started and key != "typing_outro":
+				if evaluation_transition_started and not is_evaluation_dialogue:
 					return
 				if panel == typing_narrator and not pending_typing_lines.is_empty():
 					await _play_pending_typing_lines()
@@ -149,6 +150,9 @@ func _switch_to_typing() -> void:
 	hoof_button.focus_mode = Control.FOCUS_NONE
 	narrator_panel.hide()
 	typing_overlay.show()
+	if walked_steps >= CLICKER_GOAL_STEPS:
+		_show_evaluation_screen("clicker_goal_outro")
+		return
 	typing_idle_timer.start()
 	_crossfade_to_typing_bgm()
 	await _play_narrator_lines("typing_intro", typing_narrator, typing_narrator_line)
@@ -229,17 +233,18 @@ func _play_pending_typing_lines() -> void:
 		active_typing_line = ""
 
 
-func _show_evaluation_screen() -> void:
+func _show_evaluation_screen(dialogue_key: String = "typing_outro") -> void:
 	if evaluation_transition_started:
 		return
 	evaluation_transition_started = true
+	$TypingOverlay/TypingKeyboard.process_mode = Node.PROCESS_MODE_DISABLED
 	typing_comment_timer.stop()
 	typing_idle_timer.stop()
 	pending_typing_lines.clear()
 	typing_interrupt.hide()
 	typing_narrator.modulate.a = 1.0
 	typing_narrator.hide()
-	await _play_narrator_lines("typing_outro", typing_narrator, typing_narrator_line)
+	await _play_narrator_lines(dialogue_key, typing_narrator, typing_narrator_line, true)
 	await _fade_out_bgm()
 	var result: Error = get_tree().change_scene_to_packed(EVALUATION_SCENE)
 	if result != OK:
@@ -363,7 +368,7 @@ func _push_hero(step_amount: int = 1) -> void:
 		set_process(true)
 		if not walk_frames.is_empty():
 			hero.texture = walk_frames[0]
-	step_count.text = "%s / 1,000,000 ほ" % _comma(steps)
+	step_count.text = "%s / %s ほ" % [_comma(steps), _comma(CLICKER_GOAL_STEPS)]
 	_update_gold_display()
 
 	if flash_tween != null:
@@ -477,6 +482,8 @@ func _process(delta: float) -> void:
 			walked_steps += 1
 			if walked_steps % ENCOUNTER_INTERVAL == 0:
 				queued_encounters += 1
+		if typing_overlay.visible and not evaluation_transition_started and walked_steps >= CLICKER_GOAL_STEPS:
+			_show_evaluation_screen("clicker_goal_outro")
 		if encounter == Encounter.NONE and queued_encounters > 0:
 			_start_encounter()
 

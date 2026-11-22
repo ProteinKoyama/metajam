@@ -233,7 +233,6 @@ offset_right = -94.0
 offset_bottom = -198.0
 theme_override_font_sizes/font_size = 46
 text = "−"
-tooltip_text = "点数の正負を切り替える"
 mouse_default_cursor_shape = 2
 
 [node name="Confirm" type="Button" parent="."]
