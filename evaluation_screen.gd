@@ -7,6 +7,7 @@ const MIN_SCORE_MAGNITUDE_TEXT := "9223372036854775808"
 const MIN_SCORE: int = -9223372036854775807 - 1
 const NARRATOR_PATH := "res://narrator.json"
 const UNITYROOM_CONFIG_PATH := "res://unityroom_local.tres"
+const TITLE_SCENE_PATH := "res://title_screen.tscn"
 const SUBTITLE_SECONDS: float = 4.0
 var score_digits: String = ""
 var score_negative: bool = false
@@ -21,6 +22,9 @@ var narrator_lines: Dictionary = {}
 @onready var narrator: Panel = $Narrator
 @onready var narrator_line: Label = $Narrator/Line
 @onready var ending_blackout: ColorRect = $EndingBlackout
+@onready var loading_frame: ColorRect = $EndingBlackout/LoadingFrame
+@onready var loading_bar: ProgressBar = $EndingBlackout/LoadingFrame/Bar
+@onready var loading_error: Label = $EndingBlackout/LoadingError
 @onready var score_request: HTTPRequest = $ScoreRequest
 
 
@@ -107,9 +111,29 @@ func _confirm_rating() -> void:
 	evaluation_confirmed.emit(score)
 	_send_unityroom_score(score)
 	await _play_narrator_lines(_result_dialogue_key(score))
+	await _return_to_title()
+
+
+func _return_to_title() -> void:
 	ending_blackout.show()
 	var fade: Tween = create_tween()
 	fade.tween_property(ending_blackout, "color:a", 1.0, 1.0)
+	await fade.finished
+	await get_tree().create_timer(1.0).timeout
+
+	ending_blackout.mouse_default_cursor_shape = Control.CURSOR_WAIT
+	loading_frame.show()
+	var progress: Tween = create_tween()
+	progress.tween_property(loading_bar, "value", loading_bar.max_value, 1.0)
+	await progress.finished
+	await get_tree().process_frame
+
+	var result: Error = get_tree().change_scene_to_file(TITLE_SCENE_PATH)
+	if result != OK:
+		ending_blackout.mouse_default_cursor_shape = Control.CURSOR_ARROW
+		loading_frame.hide()
+		loading_error.show()
+		push_error("Could not return to the title screen: %s" % error_string(result))
 
 
 func _send_unityroom_score(score: int) -> void:

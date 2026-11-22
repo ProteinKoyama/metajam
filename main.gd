@@ -103,6 +103,11 @@ func _ready() -> void:
 		narrator_lines = data
 
 
+func _exit_tree() -> void:
+	if is_instance_valid(hero_bgm) and hero_bgm.get_parent() != self:
+		hero_bgm.queue_free()
+
+
 func _input(event: InputEvent) -> void:
 	if evaluation_transition_started or typing_switch_pending:
 		return

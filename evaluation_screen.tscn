@@ -57,6 +57,11 @@ border_color = Color(0.15, 0.15, 0.15, 1)
 [sub_resource type="StyleBoxFlat" id="NarratorBox"]
 bg_color = Color(0, 0, 0, 0.72)
 
+[sub_resource type="StyleBoxEmpty" id="LoadingBackground"]
+
+[sub_resource type="StyleBoxFlat" id="LoadingFill"]
+bg_color = Color(0, 0, 0, 1)
+
 [node name="EvaluationScreen" type="ColorRect" unique_id=2125089947]
 anchors_preset = 15
 anchor_right = 1.0
@@ -302,6 +307,42 @@ layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color(0, 0, 0, 0)
+
+[node name="LoadingFrame" type="ColorRect" parent="EndingBlackout"]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -256.0
+offset_top = -20.0
+offset_right = 256.0
+offset_bottom = 20.0
+mouse_filter = 2
+color = Color(1, 1, 1, 1)
+
+[node name="Bar" type="ProgressBar" parent="EndingBlackout/LoadingFrame"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+mouse_filter = 2
+theme_override_styles/background = SubResource("LoadingBackground")
+theme_override_styles/fill = SubResource("LoadingFill")
+show_percentage = false
+
+[node name="LoadingError" type="Label" parent="EndingBlackout"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 44
+text = "タイトル画面を読み込めませんでした。"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="MouseSound" type="AudioStreamPlayer" parent="." unique_id=602997633]
 stream = ExtResource("2_lipru")
