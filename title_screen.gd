@@ -12,10 +12,8 @@ const AUDIO_SETTINGS_PATH := "user://audio_settings.cfg"
 @onready var credits: Control = $Modal/Window/Credits
 @onready var license_text: RichTextLabel = $Modal/Window/Credits/License
 @onready var mixer: Control = $Modal/Window/Mixer
-@onready var bgm_slider: HSlider = $Modal/Window/Mixer/BGMSlider
-@onready var se_slider: HSlider = $Modal/Window/Mixer/SESlider
-@onready var bgm_value: Label = $Modal/Window/Mixer/BGMValue
-@onready var se_value: Label = $Modal/Window/Mixer/SEValue
+@onready var volume_slider: HSlider = $Modal/Window/Mixer/VolumeSlider
+@onready var volume_value: Label = $Modal/Window/Mixer/VolumeValue
 
 
 func _ready() -> void:
@@ -25,12 +23,10 @@ func _ready() -> void:
 		license_text.text += "\n\nNoto Sans JP\n\n" + font_license
 	var saved: ConfigFile = ConfigFile.new()
 	saved.load(AUDIO_SETTINGS_PATH)
-	bgm_slider.value = clampf(float(saved.get_value("volume", "BGM", 100.0)), 0.0, 100.0)
-	se_slider.value = clampf(float(saved.get_value("volume", "SE", 100.0)), 0.0, 100.0)
-	bgm_slider.value_changed.connect(_apply_volume.bind(&"BGM", bgm_value))
-	se_slider.value_changed.connect(_apply_volume.bind(&"SE", se_value))
-	_apply_volume(bgm_slider.value, &"BGM", bgm_value)
-	_apply_volume(se_slider.value, &"SE", se_value)
+	var previous_bgm_volume: Variant = saved.get_value("volume", "BGM", 100.0)
+	volume_slider.value = clampf(float(saved.get_value("volume", "Master", previous_bgm_volume)), 0.0, 100.0)
+	volume_slider.value_changed.connect(_apply_volume)
+	_apply_volume(volume_slider.value)
 
 
 func _unhandled_key_input(event: InputEvent) -> void:
@@ -62,8 +58,7 @@ func _close_modal() -> void:
 	var return_focus: TextureButton = sound_button if mixer.visible else settings_button
 	if mixer.visible:
 		var saved: ConfigFile = ConfigFile.new()
-		saved.set_value("volume", "BGM", bgm_slider.value)
-		saved.set_value("volume", "SE", se_slider.value)
+		saved.set_value("volume", "Master", volume_slider.value)
 		var result: Error = saved.save(AUDIO_SETTINGS_PATH)
 		if result != OK:
 			push_warning("Could not save audio settings: %s" % error_string(result))
@@ -74,9 +69,9 @@ func _close_modal() -> void:
 	return_focus.grab_focus()
 
 
-func _apply_volume(value: float, bus_name: StringName, value_label: Label) -> void:
-	value_label.text = "%d%%" % ceili(value)
-	var bus_index: int = AudioServer.get_bus_index(bus_name)
+func _apply_volume(value: float) -> void:
+	volume_value.text = "%d%%" % ceili(value)
+	var bus_index: int = AudioServer.get_bus_index(&"Master")
 	if bus_index >= 0:
 		AudioServer.set_bus_volume_db(bus_index, linear_to_db(maxf(value / 100.0, 0.0001)))
 		AudioServer.set_bus_mute(bus_index, value == 0.0)

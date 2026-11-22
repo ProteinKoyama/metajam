@@ -226,7 +226,7 @@ offset_right = 1328.0
 offset_bottom = 294.0
 theme_override_colors/font_color = Color(0.25, 0.35, 0.45, 1)
 theme_override_font_sizes/font_size = 30
-text = "サウンド"
+text = "サウンド/エンジニア"
 vertical_alignment = 1
 
 [node name="ScenarioIcon" type="TextureRect" parent="Modal/Window/Credits"]
@@ -285,22 +285,22 @@ offset_bottom = 764.0
 visible = false
 mouse_filter = 2
 
-[node name="BGMLabel" type="Label" parent="Modal/Window/Mixer"]
+[node name="VolumeLabel" type="Label" parent="Modal/Window/Mixer"]
 offset_left = 54.0
-offset_top = 120.0
+offset_top = 280.0
 offset_right = 244.0
-offset_bottom = 194.0
+offset_bottom = 354.0
 theme_override_colors/font_color = Color(0.12, 0.19, 0.27, 1)
 theme_override_font_sizes/font_size = 40
-text = "BGM"
+text = "全体音量"
 horizontal_alignment = 0
 vertical_alignment = 1
 
-[node name="BGMSlider" type="HSlider" parent="Modal/Window/Mixer"]
-offset_left = 246.0
-offset_top = 120.0
+[node name="VolumeSlider" type="HSlider" parent="Modal/Window/Mixer"]
+offset_left = 256.0
+offset_top = 280.0
 offset_right = 1124.0
-offset_bottom = 194.0
+offset_bottom = 354.0
 theme_override_icons/grabber = ExtResource("7_thumb")
 theme_override_icons/grabber_highlight = ExtResource("7_thumb")
 theme_override_styles/slider = SubResource("SliderTrack")
@@ -310,47 +310,11 @@ step = 1.0
 value = 100.0
 mouse_default_cursor_shape = 2
 
-[node name="BGMValue" type="Label" parent="Modal/Window/Mixer"]
+[node name="VolumeValue" type="Label" parent="Modal/Window/Mixer"]
 offset_left = 1150.0
-offset_top = 120.0
+offset_top = 280.0
 offset_right = 1274.0
-offset_bottom = 194.0
-theme_override_colors/font_color = Color(0.12, 0.19, 0.27, 1)
-theme_override_font_sizes/font_size = 34
-text = "100%"
-horizontal_alignment = 2
-vertical_alignment = 1
-
-[node name="SELabel" type="Label" parent="Modal/Window/Mixer"]
-offset_left = 54.0
-offset_top = 292.0
-offset_right = 244.0
-offset_bottom = 366.0
-theme_override_colors/font_color = Color(0.12, 0.19, 0.27, 1)
-theme_override_font_sizes/font_size = 40
-text = "SE"
-horizontal_alignment = 0
-vertical_alignment = 1
-
-[node name="SESlider" type="HSlider" parent="Modal/Window/Mixer"]
-offset_left = 246.0
-offset_top = 292.0
-offset_right = 1124.0
-offset_bottom = 366.0
-theme_override_icons/grabber = ExtResource("7_thumb")
-theme_override_icons/grabber_highlight = ExtResource("7_thumb")
-theme_override_styles/slider = SubResource("SliderTrack")
-theme_override_styles/grabber_area = SubResource("SliderFill")
-theme_override_styles/grabber_area_highlight = SubResource("SliderFill")
-step = 1.0
-value = 100.0
-mouse_default_cursor_shape = 2
-
-[node name="SEValue" type="Label" parent="Modal/Window/Mixer"]
-offset_left = 1150.0
-offset_top = 292.0
-offset_right = 1274.0
-offset_bottom = 366.0
+offset_bottom = 354.0
 theme_override_colors/font_color = Color(0.12, 0.19, 0.27, 1)
 theme_override_font_sizes/font_size = 34
 text = "100%"

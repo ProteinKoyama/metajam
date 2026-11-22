@@ -1,7 +1,5 @@
 extends Control
 
-signal typing_idle_line_finished
-
 const NARRATOR_PATH := "res://narrator.json"
 const EVALUATION_SCENE: PackedScene = preload("res://evaluation_screen.tscn")
 const BGM_FADE_SECONDS: float = 1.0
@@ -46,8 +44,7 @@ var encounter: Encounter = Encounter.NONE
 var narrator_lines: Dictionary = {}
 var typing_switch_pending: bool = false
 var evaluation_transition_started: bool = false
-var typing_intro_playing: bool = false
-var typing_idle_line_playing: bool = false
+var typing_idle_line_pending: bool = false
 
 @onready var hero: TextureRect = $Hero
 @onready var step_popup_template: Label = $Hero/StepPopupTemplate
@@ -127,10 +124,12 @@ func _play_narrator_lines(key: String, panel: Panel, subtitle: Label) -> void:
 				subtitle.text = line
 				panel.show()
 				await get_tree().create_timer(TYPING_ANNOUNCEMENT_SECONDS).timeout
-				if panel == typing_narrator and typing_idle_line_playing:
-					await typing_idle_line_finished
-				if evaluation_transition_started:
+				if evaluation_transition_started and key != "typing_outro":
 					return
+				if panel == typing_narrator and typing_idle_line_pending:
+					await _play_typing_idle_line()
+					if evaluation_transition_started:
+						return
 	panel.hide()
 
 
@@ -148,9 +147,7 @@ func _switch_to_typing() -> void:
 	typing_overlay.show()
 	typing_idle_timer.start()
 	_crossfade_to_typing_bgm()
-	typing_intro_playing = true
 	await _play_narrator_lines("typing_intro", typing_narrator, typing_narrator_line)
-	typing_intro_playing = false
 	if not evaluation_transition_started:
 		_schedule_typing_comment()
 
@@ -162,7 +159,10 @@ func _schedule_typing_comment() -> void:
 func _on_typing_comment_timer_timeout() -> void:
 	if typing_narrator.visible:
 		typing_narrator.hide()
-		_schedule_typing_comment()
+		if typing_idle_line_pending:
+			await _play_typing_idle_line()
+		if not evaluation_transition_started:
+			_schedule_typing_comment()
 		return
 
 	var comments: Variant = narrator_lines.get("typing_comments")
@@ -179,30 +179,41 @@ func _on_typing_comment_timer_timeout() -> void:
 
 
 func _on_typing_idle_timer_timeout() -> void:
-	var line: Variant = narrator_lines.get("typing_idle")
-	if evaluation_transition_started or not line is String or line.is_empty():
-		return
-
-	typing_comment_timer.stop()
-	typing_idle_line_playing = true
-	typing_narrator_line.text = line
-	typing_narrator.show()
-	await get_tree().create_timer(TYPING_ANNOUNCEMENT_SECONDS).timeout
 	if evaluation_transition_started:
 		return
 
-	typing_narrator.hide()
-	typing_idle_line_playing = false
-	if not typing_intro_playing:
+	typing_idle_line_pending = true
+	if typing_narrator.visible:
+		return
+
+	typing_comment_timer.stop()
+	await _play_typing_idle_line()
+	if not evaluation_transition_started:
 		_schedule_typing_comment()
-	typing_idle_line_finished.emit()
+
+
+func _play_typing_idle_line() -> void:
+	typing_idle_line_pending = false
+	var line: Variant = narrator_lines.get("typing_idle")
+	if not line is String or line.is_empty():
+		return
+
+	typing_narrator_line.text = line
+	typing_narrator.show()
+	await get_tree().create_timer(TYPING_ANNOUNCEMENT_SECONDS).timeout
+	if not evaluation_transition_started:
+		typing_narrator.hide()
 
 
 func _show_evaluation_screen() -> void:
+	if evaluation_transition_started:
+		return
 	evaluation_transition_started = true
 	typing_comment_timer.stop()
 	typing_idle_timer.stop()
+	typing_idle_line_pending = false
 	typing_narrator.hide()
+	await _play_narrator_lines("typing_outro", typing_narrator, typing_narrator_line)
 	await _fade_out_bgm()
 	var result: Error = get_tree().change_scene_to_packed(EVALUATION_SCENE)
 	if result != OK:
