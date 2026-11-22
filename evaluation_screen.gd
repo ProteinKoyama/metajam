@@ -90,6 +90,7 @@ func _confirm_rating() -> void:
 		status.text = "点数を入力してください。"
 		return
 
+	$MouseSound.play()
 	var score: int
 	if score_negative:
 		score = MIN_SCORE if score_digits == MIN_SCORE_MAGNITUDE_TEXT else -score_digits.to_int()

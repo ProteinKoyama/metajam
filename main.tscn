@@ -16,6 +16,9 @@
 [ext_resource type="AudioStream" uid="uid://c1lmkisdjgk1q" path="res://Asset/BGM_Typing.ogg" id="14_typing_bgm"]
 [ext_resource type="PackedScene" path="res://typing_keyboard.tscn" id="15_keyboard"]
 [ext_resource type="FontFile" uid="uid://otrgh6crahlj" path="res://Asset/NotoSansJP-Regular.otf" id="17_narrator_font"]
+[ext_resource type="AudioStream" uid="uid://bd8o2ei52arcs" path="res://Asset/SE_Defeat.ogg" id="18_ryguw"]
+[ext_resource type="AudioStream" uid="uid://bas0b4ngmcar1" path="res://Asset/SE_Gain.ogg" id="19_d13ii"]
+[ext_resource type="AudioStream" uid="uid://cujtduw2dpuw7" path="res://Asset/SE_LevelUp.ogg" id="20_1u8w0"]
 
 [sub_resource type="Theme" id="ClickerTheme"]
 default_font = ExtResource("6_7mycd")
@@ -370,11 +373,13 @@ wait_time = 2.0
 
 [node name="HeroBGM" type="AudioStreamPlayer" parent="." unique_id=1282775424]
 stream = ExtResource("8_hero_bgm")
-bus = &"BGM"
+volume_db = -2.0
 autoplay = true
+bus = &"BGM"
 
 [node name="TypingBGM" type="AudioStreamPlayer" parent="." unique_id=214401545]
 stream = ExtResource("14_typing_bgm")
+volume_db = -2.0
 bus = &"BGM"
 
 [node name="InactivityTimer" type="Timer" parent="." unique_id=1737452784]
@@ -458,6 +463,15 @@ one_shot = true
 
 [connection signal="timeout" from="TypingIdleTimer" to="." method="_on_typing_idle_timer_timeout"]
 [connection signal="timeout" from="TypingCommentTimer" to="." method="_on_typing_comment_timer_timeout"]
+[node name="DefeatSound" type="AudioStreamPlayer" parent="." unique_id=1893171619]
+stream = ExtResource("18_ryguw")
+
+[node name="GainSound" type="AudioStreamPlayer" parent="." unique_id=1220497775]
+stream = ExtResource("19_d13ii")
+
+[node name="LevelUpSound" type="AudioStreamPlayer" parent="." unique_id=1090748399]
+stream = ExtResource("20_1u8w0")
+
 [connection signal="gui_input" from="Hero" to="." method="_on_hero_input"]
 [connection signal="pressed" from="CheerFrame" to="." method="_on_buy_cheer_pressed"]
 [connection signal="pressed" from="HoofButton" to="." method="_on_buy_hoof_pressed"]
