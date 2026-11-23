@@ -9,8 +9,8 @@
 [ext_resource type="Texture2D" uid="uid://bbdwdoy5s6f60" path="res://Asset/title_slider_thumb.svg" id="7_thumb"]
 [ext_resource type="Texture2D" uid="uid://kpqmkajvnebi" path="res://Asset/Shiratama.png" id="8_8vmu4"]
 [ext_resource type="Texture2D" uid="uid://571hi7sy2mvm" path="res://Asset/icon_saikin.png" id="8_saikin"]
-[ext_resource type="Texture2D" uid="uid://p8mc141ypvv1" path="res://Asset/13cbd4c3614dc004ca5826212db39851.png" id="9_xfn3p"]
 [ext_resource type="AudioStream" uid="uid://b723hpc4u10c3" path="res://Asset/SE_Test.ogg" id="9_test_sound"]
+[ext_resource type="Texture2D" uid="uid://p8mc141ypvv1" path="res://Asset/13cbd4c3614dc004ca5826212db39851.png" id="9_xfn3p"]
 [ext_resource type="AudioStream" uid="uid://5qbbvrsyx7dd" path="res://Asset/SE_Mouse.ogg" id="10_xfn3p"]
 
 [sub_resource type="Theme" id="DesktopTheme"]
@@ -98,7 +98,7 @@ offset_left = -162.0
 offset_top = 10.0
 offset_right = -106.0
 offset_bottom = 66.0
-tooltip_text = "設定"
+tooltip_text = "クレジット"
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("5_settings")
 ignore_texture_size = true
@@ -145,7 +145,7 @@ offset_right = 1220.0
 offset_bottom = 84.0
 theme_override_colors/font_color = Color(0.12, 0.19, 0.27, 1)
 theme_override_font_sizes/font_size = 42
-text = "設定"
+text = "クレジット"
 vertical_alignment = 1
 
 [node name="Close" type="Button" parent="Modal/Window" unique_id=473670039]
@@ -356,14 +356,13 @@ bus = &"SE"
 
 [node name="WhiteScreen" type="ColorRect" parent="." unique_id=1321849057]
 visible = false
-anchors_preset = 15
+z_index = 100
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(1, 1, 1, 1)
-z_index = 100
 
 [node name="MouseSound" type="AudioStreamPlayer" parent="." unique_id=665482019]
 stream = ExtResource("10_xfn3p")

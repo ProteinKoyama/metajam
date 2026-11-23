@@ -59,7 +59,7 @@ func _on_sound_pressed() -> void:
 
 
 func _open_modal(show_mixer: bool) -> void:
-	heading.text = "音量調節" if show_mixer else "設定"
+	heading.text = "音量調節" if show_mixer else "クレジット"
 	credits.visible = not show_mixer
 	mixer.visible = show_mixer
 	hero_button.disabled = true
