@@ -29,6 +29,9 @@ func _on_gui_input(event: InputEvent) -> void:
 		dialogue_line.text = DIALOGUE[line_index]
 		return
 
-	var result: Error = get_tree().change_scene_to_packed(HERO_CLICKER_SCENE)
+	var tree: SceneTree = get_tree()
+	tree.set_meta(&"reveal_clicker_from_prologue", true)
+	var result: Error = tree.change_scene_to_packed(HERO_CLICKER_SCENE)
 	if result != OK:
+		tree.remove_meta(&"reveal_clicker_from_prologue")
 		push_error("Could not open the hero clicker: %s" % error_string(result))

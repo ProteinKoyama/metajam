@@ -85,9 +85,13 @@ var active_typing_line: String = ""
 @onready var typing_overlay: TextureRect = $TypingOverlay
 @onready var hero_bgm: AudioStreamPlayer = HeroMusic
 @onready var typing_bgm: AudioStreamPlayer = $TypingBGM
+@onready var clicker_reveal: ColorRect = $ClickerReveal
 
 func _ready() -> void:
 	HeroMusic.ensure_playing()
+	if get_tree().has_meta(&"reveal_clicker_from_prologue"):
+		get_tree().remove_meta(&"reveal_clicker_from_prologue")
+		_play_clicker_reveal()
 	set_process(false)
 	_update_gold_display()
 	_update_cheer_display()
@@ -96,6 +100,15 @@ func _ready() -> void:
 	var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(NARRATOR_PATH))
 	if data is Dictionary:
 		narrator_lines = data
+
+
+func _play_clicker_reveal() -> void:
+	var reveal_material: ShaderMaterial = clicker_reveal.material as ShaderMaterial
+	reveal_material.set_shader_parameter("progress", 0.0)
+	clicker_reveal.show()
+	var reveal: Tween = create_tween()
+	reveal.tween_property(reveal_material, "shader_parameter/progress", 1.0, 0.85)
+	reveal.tween_callback(clicker_reveal.hide)
 
 
 func _exit_tree() -> void:

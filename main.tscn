@@ -19,6 +19,13 @@
 [ext_resource type="AudioStream" uid="uid://bas0b4ngmcar1" path="res://Asset/SE_Gain.ogg" id="19_d13ii"]
 [ext_resource type="AudioStream" uid="uid://cujtduw2dpuw7" path="res://Asset/SE_LevelUp.ogg" id="20_1u8w0"]
 
+[ext_resource type="Shader" path="res://clicker_reveal.gdshader" id="21_clicker_reveal"]
+
+[sub_resource type="ShaderMaterial" id="ClickerRevealMaterial"]
+resource_local_to_scene = true
+shader = ExtResource("21_clicker_reveal")
+shader_parameter/progress = 0.0
+
 [sub_resource type="Theme" id="ClickerTheme"]
 default_font = ExtResource("6_7mycd")
 
@@ -465,6 +472,14 @@ bus = &"SE"
 [node name="LevelUpSound" type="AudioStreamPlayer" parent="." unique_id=1090748399]
 stream = ExtResource("20_1u8w0")
 bus = &"SE"
+
+[node name="ClickerReveal" type="ColorRect" parent="."]
+visible = false
+z_index = 10
+material = SubResource("ClickerRevealMaterial")
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 0
 
 [connection signal="gui_input" from="Hero" to="." method="_on_hero_input"]
 [connection signal="pressed" from="CheerFrame" to="." method="_on_buy_cheer_pressed"]
