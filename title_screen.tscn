@@ -92,9 +92,11 @@ color = Color(0.89, 0.94, 0.99, 1)
 
 [node name="Settings" type="TextureButton" parent="Taskbar" unique_id=1113856702]
 layout_mode = 0
-offset_left = 26.0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -162.0
 offset_top = 10.0
-offset_right = 82.0
+offset_right = -106.0
 offset_bottom = 66.0
 tooltip_text = "設定"
 mouse_default_cursor_shape = 2
@@ -104,9 +106,11 @@ stretch_mode = 5
 
 [node name="Sound" type="TextureButton" parent="Taskbar" unique_id=1961669883]
 layout_mode = 0
-offset_left = 106.0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -82.0
 offset_top = 10.0
-offset_right = 162.0
+offset_right = -26.0
 offset_bottom = 66.0
 tooltip_text = "音量調節"
 mouse_default_cursor_shape = 2
